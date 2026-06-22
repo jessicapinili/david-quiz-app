@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F9DFC6">
+<title>PMP Practice Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF8400;
+    --vista-blue: #8FA0D8;
+    --amande: #F9DFC6;
+    --oxford: #0B0829;
+    --green: #2D8653;
+    --red: #C0392B;
+    --green-light: #E8F5EE;
+    --red-light: #FDECEA;
+    --neutral: #EDE8E0;
+    --pad: 20px;
+    --safe-l: max(var(--pad), env(safe-area-inset-left));
+    --safe-r: max(var(--pad), env(safe-area-inset-right));
+    --safe-t: max(var(--pad), env(safe-area-inset-top));
+    --safe-b: env(safe-area-inset-bottom);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--amande);
+    color: var(--oxford);
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, .bold { font-weight: 700; }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding-left: var(--safe-l);
+    padding-right: var(--safe-r);
+    padding-top: var(--safe-t);
+    padding-bottom: calc(40px + var(--safe-b));
+  }
+
+  /* ===== LOGIN ===== */
+  #screen-login .wrap { max-width: 480px; }
+  .login-outer { min-height: 88vh; min-height: 88dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .login-card {
+    background: #fff; border-radius: 24px; padding: 32px 24px;
+    box-shadow: 0 10px 40px rgba(11,8,41,0.12);
+    width: 100%; max-width: 420px;
+  }
+  .login-emoji { font-size: 2.4rem; margin-bottom: 8px; }
+  .login-card h1 { font-size: 1.7rem; margin-bottom: 8px; }
+  .login-card p { font-size: 1rem; opacity: 0.75; margin-bottom: 22px; }
+  .code-field { position: relative; margin-bottom: 12px; }
+  .code-field input {
+    width: 100%; font-family: inherit; font-size: 16px; font-weight: 700;
+    letter-spacing: 0.18em; text-align: center;
+    padding: 16px 52px 16px 18px; border: 2px solid var(--vista-blue);
+    border-radius: 14px; background: var(--amande); color: var(--oxford);
+    min-height: 56px;
+  }
+  .code-field input::placeholder { letter-spacing: normal; font-weight: 500; opacity: 0.5; }
+  .code-field input:focus { border-color: var(--orange); outline: none; }
+  .toggle-code {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border: none; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; border-radius: 10px;
+    color: var(--oxford); opacity: 0.6; font-size: 1.2rem;
+  }
+  .toggle-code:hover { opacity: 1; background: rgba(11,8,41,0.06); }
+  .btn-login {
+    width: 100%; background: var(--orange); color: var(--oxford); font-weight: 700;
+    font-size: 1.1rem; border: none; border-radius: 14px; padding: 16px; min-height: 56px;
+    cursor: pointer; transition: transform .12s, background .15s; box-shadow: 0 4px 12px rgba(255,132,0,0.25);
+  }
+  .btn-login:active { transform: scale(0.97); }
+  .btn-login:hover { background: #e67600; }
+  .login-error { color: var(--red); font-weight: 700; font-size: 0.92rem; margin-top: 14px; min-height: 22px; }
+  .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes shake {
+    10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-8px);} 40%,60%{transform:translateX(8px);}
+  }
+  .login-card.bye { animation: cardOut .5s ease forwards; }
+  @keyframes cardOut { to { opacity: 0; transform: translateY(-24px) scale(0.96); } }
+
+  /* ===== DASHBOARD ===== */
+  .dash-header { display: flex; justify-content: space-between; align-items: center; padding-top: 6px; }
+  .theme-toggle {
+    background: none; border: 2px solid rgba(11,8,41,0.25); color: var(--oxford);
+    font-size: 1.1rem; width: 44px; height: 44px; border-radius: 10px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all .15s;
+  }
+  .theme-toggle:hover { background: rgba(11,8,41,0.06); }
+  .streak-chip {
+    display: inline-block; margin-top: 12px; margin-left: 8px; background: #fff;
+    border: 2px solid var(--orange); color: var(--oxford); font-weight: 700; font-size: 0.85rem;
+    padding: 6px 14px; border-radius: 20px;
+  }
+  .resume-banner {
+    background: var(--vista-blue); border-radius: 16px; padding: 16px 18px; margin-bottom: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .resume-banner .rb-text { font-weight: 700; font-size: 0.98rem; color: var(--oxford); }
+  .resume-banner .rb-text span { display: block; font-weight: 500; font-size: 0.85rem; opacity: 0.8; margin-top: 2px; }
+  .resume-banner .rb-actions { display: flex; gap: 10px; }
+  .resume-banner button { flex: 1; font-weight: 700; font-size: 0.92rem; padding: 12px; border-radius: 10px; min-height: 46px; cursor: pointer; border: none; transition: transform .12s; }
+  .resume-banner button:active { transform: scale(0.98); }
+  .btn-resume { background: var(--orange); color: var(--oxford); }
+  .btn-resume:hover { background: #e67600; }
+  .btn-discard { background: rgba(11,8,41,0.12); color: var(--oxford); }
+  .btn-discard:hover { background: rgba(11,8,41,0.2); }
+  .btn-logout {
+    background: none; border: 2px solid rgba(11,8,41,0.25); color: var(--oxford);
+    font-weight: 700; font-size: 0.82rem; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+    min-height: 40px; transition: all .15s;
+  }
+  .btn-logout:hover { background: var(--oxford); color: var(--amande); border-color: var(--oxford); }
+  .dashboard-header { text-align: center; padding: 18px 0 24px; }
+  .dashboard-header h1 { font-size: clamp(1.9rem, 7vw, 2.8rem); line-height: 1.1; margin-bottom: 10px; }
+  .dashboard-header p { font-size: 1.05rem; opacity: 0.75; margin-bottom: 4px; }
+  .question-count-badge {
+    display: inline-block; background: var(--oxford); color: var(--amande);
+    font-weight: 700; font-size: 0.85rem; padding: 6px 16px; border-radius: 20px; margin-top: 12px;
+  }
+  .section-label { font-weight: 700; font-size: 1.15rem; margin: 30px 0 14px; }
+  .quiz-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 22px; }
+  .quiz-card {
+    background: #fff; border: 3px solid transparent; border-radius: 18px;
+    padding: 18px 12px; text-align: center; cursor: pointer; user-select: none;
+    transition: transform .15s, box-shadow .15s, border-color .15s, background .15s;
+    box-shadow: 0 2px 8px rgba(11,8,41,0.07); min-height: 92px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .quiz-card:active { transform: scale(0.96); }
+  .quiz-card.selected { background: var(--orange); border-color: var(--orange); box-shadow: 0 8px 22px rgba(255,132,0,0.3); transform: translateY(-2px); }
+  .quiz-card .num { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .quiz-card .lbl { font-size: 0.9rem; font-weight: 700; opacity: 0.65; margin-top: 4px; }
+  .quiz-card.selected .lbl { opacity: 1; }
+  .quiz-card .check { display: none; font-size: 1.1rem; margin-top: 6px; animation: popIn .3s ease; }
+  .quiz-card.selected .check { display: block; }
+  @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+  .btn-start {
+    display: block; width: 100%; background: var(--orange); color: var(--oxford);
+    font-weight: 700; font-size: 1.1rem; border: none; border-radius: 16px; padding: 18px;
+    min-height: 56px; cursor: pointer; transition: transform .12s, background .15s;
+    box-shadow: 0 4px 12px rgba(255,132,0,0.25);
+  }
+  .btn-start:disabled { background: #ddd; color: #999; cursor: not-allowed; box-shadow: none; }
+  .btn-start:not(:disabled):active { transform: scale(0.98); }
+  .btn-start:not(:disabled):hover { background: #e67600; }
+  .note { text-align: center; font-size: 0.82rem; opacity: 0.6; margin-top: 14px; }
+  .info-msg {
+    background: var(--vista-blue); color: var(--oxford); border-radius: 12px;
+    padding: 12px 16px; font-size: 0.9rem; font-weight: 500; margin-top: 14px;
+    text-align: center; display: none;
+  }
+  .info-msg.show { display: block; }
+
+  .history-section { margin-top: 36px; }
+  .history-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .stat-card { background: #fff; border-radius: 14px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .stat-card .sv { font-size: 1.6rem; font-weight: 700; color: var(--orange); }
+  .stat-card .sk { font-size: 0.78rem; font-weight: 700; opacity: 0.65; margin-top: 4px; }
+  .history-table { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .history-table table { width: 100%; border-collapse: collapse; }
+  .history-table th { background: var(--oxford); color: var(--amande); font-weight: 700; font-size: 0.78rem; padding: 11px 12px; text-align: left; }
+  .history-table td { padding: 11px 12px; font-size: 0.85rem; border-bottom: 1px solid var(--amande); }
+  .history-table tr:last-child td { border-bottom: none; }
+  .pb-badge { display: inline-block; font-size: 0.78rem; }
+  .no-history { text-align: center; padding: 28px 16px; opacity: 0.5; font-weight: 700; }
+  .btn-clear {
+    background: none; border: 2px solid var(--oxford); color: var(--oxford);
+    font-weight: 700; font-size: 0.82rem; padding: 9px 18px; border-radius: 10px;
+    cursor: pointer; margin-top: 14px; min-height: 40px; transition: all .15s;
+  }
+  .btn-clear:hover { background: var(--oxford); color: var(--amande); }
+
+  /* ===== QUIZ ===== */
+  #screen-quiz .wrap { padding-bottom: calc(120px + var(--safe-b)); }
+  .quiz-top { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 14px; gap: 10px; }
+  .progress-label { font-weight: 700; font-size: 0.95rem; }
+  .btn-end {
+    background: none; border: 2px solid rgba(11,8,41,0.25); color: var(--oxford);
+    font-weight: 700; font-size: 0.8rem; padding: 8px 14px; border-radius: 10px;
+    cursor: pointer; min-height: 40px; transition: all .15s;
+  }
+  .btn-end:hover { background: var(--oxford); color: var(--amande); border-color: var(--oxford); }
+  .progress-bar-wrap { height: 8px; background: var(--vista-blue); border-radius: 8px; margin-bottom: 22px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 8px; transition: width .35s ease; }
+  .question-card { background: #fff; border-radius: 20px; padding: 22px; box-shadow: 0 2px 12px rgba(11,8,41,0.08); margin-bottom: 16px; }
+  .question-card h2 { font-size: 1.1rem; line-height: 1.55; margin-bottom: 6px; word-break: break-word; }
+  .q-instruction { font-size: 0.82rem; opacity: 0.6; margin-bottom: 16px; font-style: italic; }
+  .select-all-note { font-size: 0.8rem; color: var(--orange); font-weight: 700; margin-bottom: 10px; }
+  .answer-list { display: flex; flex-direction: column; gap: 12px; }
+  .answer-opt {
+    display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left;
+    background: var(--amande); border: 2px solid transparent; border-radius: 14px;
+    padding: 14px 16px; cursor: pointer; transition: border-color .15s, background .15s, transform .1s;
+    font-family: inherit; font-size: 0.98rem; color: var(--oxford); min-height: 44px;
+    word-break: break-word;
+  }
+  .answer-opt:active { transform: scale(0.99); }
+  .answer-opt:hover { border-color: var(--orange); background: #fef3e2; }
+  .answer-opt.selected { border-color: var(--orange); background: #fff3e0; }
+  .answer-opt .opt-letter { font-weight: 700; min-width: 22px; opacity: 0.5; }
+  .answer-opt.selected .opt-letter { opacity: 1; color: var(--orange); }
+  .answer-opt .opt-text { flex: 1; }
+
+  #next-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    padding: 12px var(--safe-r) calc(12px + var(--safe-b)) var(--safe-l);
+    background: rgba(249,223,198,0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transform: translateY(140%); transition: transform .3s ease; pointer-events: none;
+    border-top: 1px solid rgba(11,8,41,0.06);
+  }
+  #next-bar.show { transform: translateY(0); pointer-events: auto; }
+  #next-bar .inner { max-width: 680px; margin: 0 auto; }
+  .btn-next {
+    display: block; width: 100%; background: var(--orange); color: var(--oxford);
+    font-weight: 700; font-size: 1.05rem; border: none; border-radius: 14px; padding: 16px;
+    min-height: 56px; cursor: pointer; transition: transform .12s, background .15s;
+    box-shadow: 0 3px 12px rgba(255,132,0,0.25);
+  }
+  .btn-next:active { transform: scale(0.98); }
+  .btn-next:hover { background: #e67600; }
+
+  /* ===== REVEAL ===== */
+  #screen-reveal .wrap { min-height: 80vh; min-height: 80dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .reveal-msg { font-size: 1.4rem; font-weight: 700; min-height: 40px; }
+  .reveal-msg .sub { display:block; font-size: 0.95rem; font-weight: 500; opacity: 0.6; margin-top: 10px; }
+  .reveal-dots span { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--orange); margin: 0 4px; animation: bounceDot 1s infinite; }
+  .reveal-dots span:nth-child(2){ animation-delay:.15s; } .reveal-dots span:nth-child(3){ animation-delay:.3s; }
+  @keyframes bounceDot { 0%,80%,100%{transform:translateY(0);opacity:.4;} 40%{transform:translateY(-10px);opacity:1;} }
+  .skip-reveal { margin-top: 26px; background:none; border:2px solid rgba(11,8,41,0.25); color:var(--oxford); font-weight:700; font-size:0.82rem; padding:9px 18px; border-radius:10px; cursor:pointer; min-height:40px; }
+  .skip-reveal:hover { background: var(--oxford); color: var(--amande); }
+  .fade-enter { animation: fadeIn .5s ease; }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+  /* ===== RESULTS ===== */
+  .result-hero { text-align: center; padding: 14px 0 18px; }
+  .pb-flash { font-weight: 700; font-size: 1.05rem; margin-bottom: 14px; min-height: 24px; }
+  .pb-flash.best { color: var(--orange); }
+  .score-ring-wrap { position: relative; width: 168px; height: 168px; margin: 0 auto 18px; }
+  .score-ring-wrap.glow { filter: drop-shadow(0 0 14px rgba(255,132,0,0.65)); }
+  .score-ring-wrap.enlarge { animation: enlarge .6s ease; }
+  @keyframes enlarge { 0%{transform:scale(1);} 40%{transform:scale(1.12);} 100%{transform:scale(1);} }
+  .score-ring-wrap svg { transform: rotate(-90deg); width: 168px; height: 168px; }
+  .ring-bg { fill: none; stroke: var(--neutral); stroke-width: 14; }
+  .ring-fg { fill: none; stroke: var(--orange); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-center .pct { font-size: 2.6rem; font-weight: 700; color: var(--oxford); line-height: 1; }
+  .ring-center .lab { font-size: 0.75rem; font-weight: 700; opacity: 0.55; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .result-icon { font-size: 2.6rem; margin-bottom: 6px; }
+  .result-icon.bounce { animation: bounce1 .7s ease; }
+  @keyframes bounce1 { 0%{transform:translateY(0);} 30%{transform:translateY(-16px);} 50%{transform:translateY(0);} 70%{transform:translateY(-7px);} 100%{transform:translateY(0);} }
+  .result-headline { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+  .result-sub { opacity: 0.78; font-size: 0.96rem; max-width: 420px; margin: 0 auto; }
+  .change-line { font-weight: 700; font-size: 0.9rem; margin-top: 12px; color: var(--vista-blue); }
+  .change-line.up { color: var(--green); }
+
+  .results-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 22px 0; }
+  .rs-card { background: #fff; border-radius: 14px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .rs-card.full { grid-column: 1 / -1; }
+  .rs-card .rv { font-size: 1.5rem; font-weight: 700; }
+  .rs-card .rv.green { color: var(--green); } .rs-card .rv.red { color: var(--red); }
+  .rs-card .rl { font-size: 0.78rem; font-weight: 700; opacity: 0.6; margin-top: 4px; }
+  .reveal-block { animation: riseIn .5s ease; }
+  @keyframes riseIn { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-btn { flex: 0 0 auto; background: #fff; border: 2px solid var(--vista-blue); color: var(--oxford); font-weight: 700; font-size: 0.85rem; padding: 9px 16px; border-radius: 10px; cursor: pointer; min-height: 42px; white-space: nowrap; transition: all .15s; }
+  .filter-btn.active { background: var(--oxford); border-color: var(--oxford); color: var(--amande); }
+
+  .quiz-mistakes-row { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .btn-quizmore { background: var(--vista-blue); color: var(--oxford); border: none; font-weight: 700; font-size: 0.95rem; padding: 14px; border-radius: 14px; cursor: pointer; min-height: 50px; transition: transform .12s, opacity .15s; }
+  .btn-quizmore:active { transform: scale(0.98); }
+  .btn-quizmore:disabled { background: #e2ddd3; color: #a8a39a; cursor: not-allowed; }
+  .hint-line { font-size: 0.8rem; opacity: 0.6; text-align: center; margin-bottom: 16px; }
+
+  .review-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+  .review-item { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .review-head { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
+  .review-item .q-text { font-weight: 700; font-size: 0.98rem; flex: 1; word-break: break-word; }
+  .flag-btn { flex: 0 0 auto; width: 40px; height: 40px; border: none; background: var(--amande); border-radius: 10px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; opacity: 0.6; transition: all .15s; }
+  .flag-btn.on { opacity: 1; background: #fff3e0; }
+  .review-opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; font-size: 0.9rem; word-break: break-word; }
+  .review-opt.correct-ans { background: var(--green-light); border: 2px solid var(--green); }
+  .review-opt.wrong-ans { background: var(--red-light); border: 2px solid var(--red); }
+  .review-opt.neutral { background: var(--amande); border: 2px solid transparent; }
+  .review-opt .ro-text { flex: 1; }
+  .review-tag { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; white-space: nowrap; align-self: center; }
+  .tag-correct { background: var(--green); color: #fff; }
+  .tag-wrong { background: var(--red); color: #fff; }
+  .tag-answer { background: var(--oxford); color: var(--amande); }
+
+  .results-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+  .btn-action { font-weight: 700; font-size: 1rem; padding: 16px; border-radius: 14px; border: none; cursor: pointer; min-height: 54px; transition: transform .12s, background .15s; }
+  .btn-action:active { transform: scale(0.98); }
+  .btn-primary { background: var(--orange); color: var(--oxford); box-shadow: 0 3px 10px rgba(255,132,0,0.22); }
+  .btn-primary:hover { background: #e67600; }
+  .btn-secondary { background: var(--vista-blue); color: var(--oxford); }
+  .btn-secondary:hover { background: #7a8fc4; }
+  .btn-dark { background: var(--oxford); color: var(--amande); }
+  .btn-dark:hover { background: #1a1445; }
+  .btn-ghost { background: #fff; color: var(--oxford); border: 2px solid rgba(11,8,41,0.18); }
+
+  #confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+
+  /* ===== CONFIRM MODAL ===== */
+  .confirm-overlay { position: fixed; inset: 0; background: rgba(11,8,41,0.55); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 24px; }
+  .confirm-overlay.show { display: flex; animation: fadeIn .2s ease; }
+  .confirm-box { background: #fff; border-radius: 20px; padding: 26px 22px calc(22px + env(safe-area-inset-bottom)); max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(11,8,41,0.35); }
+  .confirm-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 8px; }
+  .confirm-msg { font-size: 0.95rem; opacity: 0.75; margin-bottom: 22px; line-height: 1.5; }
+  .confirm-actions { display: flex; flex-direction: column; gap: 10px; }
+  .btn-confirm-ok { background: var(--orange); color: var(--oxford); font-weight: 700; font-size: 1rem; border: none; border-radius: 12px; padding: 14px; min-height: 50px; cursor: pointer; transition: transform .12s, background .15s; }
+  .btn-confirm-ok:active { transform: scale(0.98); } .btn-confirm-ok:hover { background: #e67600; }
+  .btn-confirm-cancel { background: #fff; color: var(--oxford); font-weight: 700; font-size: 1rem; border: 2px solid rgba(11,8,41,0.2); border-radius: 12px; padding: 14px; min-height: 50px; cursor: pointer; transition: all .15s; }
+  .btn-confirm-cancel:hover { background: var(--amande); }
+  @media (min-width: 768px) { .confirm-actions { flex-direction: row-reverse; } .confirm-actions button { flex: 1; } }
+
+  /* ===== DESKTOP ===== */
+  @media (min-width: 768px) {
+    :root { --pad: 24px; }
+    .wrap { max-width: 1100px; padding-top: 32px; padding-bottom: 56px; }
+    #screen-login .wrap { max-width: 520px; }
+    .quiz-cards, #screen-quiz .question-card, #screen-quiz .quiz-top, .progress-bar-wrap { max-width: 760px; margin-left: auto; margin-right: auto; }
+    #screen-quiz .wrap { padding-bottom: 56px; }
+    .quiz-cards { gap: 16px; }
+    .quiz-card { min-height: 120px; padding: 26px 18px; }
+    .quiz-card .num { font-size: 2.4rem; }
+    .dashboard-header h1 { font-size: 3rem; }
+    .btn-start, .info-msg, .note, .history-section { max-width: 760px; margin-left: auto; margin-right: auto; }
+    .history-stats { grid-template-columns: repeat(4, 1fr); }
+    #next-bar { position: static; transform: none; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; border: none; pointer-events: auto; margin-top: 18px; }
+    #next-bar .inner { max-width: 760px; }
+    .question-card h2 { font-size: 1.18rem; }
+    .results-stats { grid-template-columns: repeat(4, 1fr); }
+    .result-hero, .filter-row, .review-list, .results-btns, .quiz-mistakes-row, .hint-line { max-width: 820px; margin-left: auto; margin-right: auto; }
+    .results-btns { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .results-btns .span2 { grid-column: 1 / -1; }
+    .quiz-mistakes-row { flex-direction: row; }
+    .quiz-mistakes-row .btn-quizmore { flex: 1; }
+  }
+  @media (min-width: 1100px) { .wrap { max-width: 1140px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .ring-fg { transition: none; }
+  }
+
+  /* ===== EXPLAIN ===== */
+  .btn-explain { margin-top: 10px; background: var(--vista-blue); color: var(--oxford); border: none; font-weight: 700; font-size: 0.85rem; padding: 10px 14px; border-radius: 10px; cursor: pointer; min-height: 42px; transition: opacity .15s, transform .12s; }
+  .btn-explain:active { transform: scale(0.98); }
+  .btn-explain:disabled { opacity: 0.6; cursor: default; }
+  .explain-box { margin-top: 10px; background: var(--amande); border-left: 3px solid var(--orange); border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.55; display: none; }
+  .explain-box.show { display: block; animation: fadeIn .25s ease; }
+  .explain-box .ex-label { font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.55; margin-bottom: 4px; }
+
+  /* ===== DARK MODE ===== */
+  body.dark { background: #14102E; color: #F4ECE0; }
+  body.dark .login-card, body.dark .question-card, body.dark .stat-card, body.dark .rs-card,
+  body.dark .review-item, body.dark .history-table, body.dark .confirm-box, body.dark .quiz-card {
+    background: #1E183C; color: #F4ECE0; box-shadow: 0 2px 12px rgba(0,0,0,0.45);
+  }
+  body.dark .quiz-card.selected { background: var(--orange); color: var(--oxford); }
+  body.dark .answer-opt, body.dark .code-field input, body.dark .review-opt.neutral, body.dark .explain-box { background: #241D44; color: #F4ECE0; }
+  body.dark .answer-opt:hover { background: #2C2452; border-color: var(--orange); }
+  body.dark .answer-opt.selected { background: #3A2A1A; border-color: var(--orange); }
+  body.dark .code-field input { border-color: #5C6BAA; }
+  body.dark .code-field input::placeholder { color: #F4ECE0; }
+  body.dark .history-table td { border-color: #2A2350; }
+  body.dark .filter-btn, body.dark .btn-ghost { background: #1E183C; color: #F4ECE0; border-color: #5C6BAA; }
+  body.dark .filter-btn.active { background: #F4ECE0; color: #14102E; border-color: #F4ECE0; }
+  body.dark .question-count-badge { background: #5C6BAA; color: #F4ECE0; }
+  body.dark .streak-chip { background: #1E183C; }
+  body.dark .btn-dark { background: #3A3270; color: #F4ECE0; }
+  body.dark .btn-logout, body.dark .btn-end, body.dark .btn-clear, body.dark .theme-toggle { border-color: rgba(244,236,224,0.3); color: #F4ECE0; }
+  body.dark .btn-logout:hover, body.dark .btn-end:hover, body.dark .btn-clear:hover { background: #F4ECE0; color: #14102E; }
+  body.dark .progress-bar-wrap, body.dark .ring-bg { stroke: #2A2350; }
+  body.dark .progress-bar-wrap { background: #2A2350; }
+  body.dark #next-bar { background: rgba(20,16,46,0.92); border-top-color: rgba(244,236,224,0.08); }
+  body.dark .flag-btn { background: #241D44; }
+  body.dark .flag-btn.on { background: #3A2A1A; }
+  body.dark .review-opt.correct-ans { background: rgba(45,134,83,0.22); }
+  body.dark .review-opt.wrong-ans { background: rgba(192,57,43,0.22); }
+  body.dark .confirm-overlay { background: rgba(0,0,0,0.65); }
+  body.dark .btn-confirm-cancel { background: #1E183C; color: #F4ECE0; border-color: rgba(244,236,224,0.25); }
+  body.dark .no-history, body.dark .review-opt.neutral { color: #F4ECE0; }
+  body.dark .resume-banner .btn-discard { background: rgba(244,236,224,0.15); }
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- ===== LOGIN ===== -->
+<div id="screen-login" class="screen active">
+  <div class="wrap">
+    <div class="login-outer">
+      <div class="login-card" id="login-card">
+        <div class="login-emoji" aria-hidden="true">🥸</div>
+        <h1>Ready to study?</h1>
+        <p>Enter the access code to open your study dashboard.</p>
+        <div class="code-field">
+          <input id="code-input" type="password" inputmode="text" autocomplete="off"
+            autocapitalize="off" autocorrect="off" spellcheck="false"
+            placeholder="Access code" aria-label="Access code" />
+          <button class="toggle-code" id="toggle-code" type="button" aria-label="Show access code" aria-pressed="false">👁️</button>
+        </div>
+        <button class="btn-login" id="btn-login" type="button">Enter Dashboard</button>
+        <div class="login-error" id="login-error" role="alert" aria-live="assertive"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="screen-dashboard" class="screen">
+  <div class="wrap">
+    <div class="dash-header">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+      <button class="btn-logout" id="btn-logout" type="button">Log Out</button>
+    </div>
+    <div class="dashboard-header">
+      <h1>Hello, David. Let's Study 🥸</h1>
+      <p>How many questions would you like to practise?</p>
+      <div class="question-count-badge" id="total-count-badge">Loading question bank...</div>
+      <div class="streak-chip" id="streak-chip" style="display:none"></div>
+    </div>
+
+    <div class="resume-banner" id="resume-banner" style="display:none"></div>
+
+    <div class="quiz-cards" id="quiz-cards"></div>
+
+    <button class="btn-start" id="btn-start" type="button" disabled>Start Quiz</button>
+    <div class="info-msg" id="info-msg"></div>
+    <p class="note">Every quiz is randomly generated using only your uploaded study material.</p>
+
+    <div class="history-section">
+      <div class="section-label">Study History</div>
+      <div class="history-stats" id="history-stats"></div>
+      <div class="history-table" id="history-table-wrap">
+        <div class="no-history">No quizzes completed yet. Start your first quiz above.</div>
+      </div>
+      <div style="text-align:center"><button class="btn-clear" id="btn-clear" type="button">Clear History</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="screen-quiz" class="screen">
+  <div class="wrap">
+    <div class="quiz-top">
+      <div class="progress-label" id="progress-label">Question 1 of 10</div>
+      <button class="btn-end" id="btn-end" type="button">End Quiz</button>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="question-card">
+      <div class="q-instruction" id="q-instruction"></div>
+      <h2 id="q-text"></h2>
+      <div class="select-all-note" id="select-all-note" style="display:none">Select all that apply</div>
+      <div class="answer-list" id="answer-list"></div>
+    </div>
+  </div>
+  <div id="next-bar">
+    <div class="inner">
+      <button class="btn-next" id="btn-next" type="button" disabled>Next Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REVEAL ===== -->
+<div id="screen-reveal" class="screen">
+  <div class="wrap">
+    <div class="reveal-msg" id="reveal-msg" aria-live="polite"></div>
+    <div class="reveal-dots" id="reveal-dots" style="margin-top:18px"><span></span><span></span><span></span></div>
+    <button class="skip-reveal" id="skip-reveal" type="button">Skip Reveal</button>
+  </div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div id="screen-results" class="screen">
+  <div class="wrap">
+    <div class="result-hero">
+      <div class="pb-flash" id="pb-flash"></div>
+      <div class="score-ring-wrap" id="score-ring-wrap">
+        <svg viewBox="0 0 168 168" aria-hidden="true">
+          <circle class="ring-bg" cx="84" cy="84" r="74"></circle>
+          <circle class="ring-fg" id="ring-fg" cx="84" cy="84" r="74"></circle>
+        </svg>
+        <div class="ring-center">
+          <div class="pct" id="res-pct">0%</div>
+          <div class="lab" id="res-dynamic-label">Score</div>
+        </div>
+      </div>
+      <div class="result-icon" id="result-icon" aria-hidden="true"></div>
+      <h2 class="result-headline" id="res-headline"></h2>
+      <p class="result-sub" id="res-sub"></p>
+      <div class="change-line" id="change-line"></div>
+    </div>
+
+    <div id="results-detail"></div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM MODAL ===== -->
+<div id="confirm-overlay" class="confirm-overlay" aria-hidden="true">
+  <div class="confirm-box" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="confirm-title" id="confirm-title"></div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="btn-confirm-ok" id="confirm-ok" type="button">Confirm</button>
+      <button class="btn-confirm-cancel" id="confirm-cancel" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // ---- EXPLORING PM: THEN AND NOW ----
+  {q:"What could a modern project manager evolve into?",type:"multi",opts:["Facilitator","Coach","Scrum master","Program director"],correct:[0,1,2]},
+  {q:"What hybrid method is ideal for a single organization with multiple functional teams interacting daily and following their own processes?",type:"single",opts:["Agile element within a traditional project","Traditional methodology followed by agile methodology","Parallel use of agile and traditional methodologies","Agile methodology followed by traditional methodology"],correct:[2]},
+  {q:"Which terms represent domains of PMP curriculum?",type:"multi",opts:["Tools","Process","People","Enablers"],correct:[1,2]},
+  {q:"What statement accurately describes the relationship among scope, time, and cost in a traditional project?",type:"single",opts:["Time drives cost and scope","Scope and time drive cost","Cost and time drive scope","Scope drives cost and time"],correct:[3]},
+  {q:"What is a defining feature of an Agile life cycle?",type:"single",opts:["Plan-driven","Predictive","Iterative","Waterfall"],correct:[2]},
+  {q:"What project approach involves dynamic requirements, repeated activities until correct, and a single delivery?",type:"single",opts:["Agile","Incremental","Iterative","Predictive"],correct:[2]},
+  {q:"The PMP exam is offered by which organization?",type:"single",opts:["The Project Management Institute (PMI)","The Internal Organization for Project Management","The Project Management Foundation","The Project Alliance"],correct:[0]},
+  {q:"What action should be prioritized during periods of fast-paced change?",type:"single",opts:["Planning well in advance","Being an observer","Being ready to adapt","Avoiding change"],correct:[2]},
+  {q:"What characteristic illustrates how phases relate in a traditional life cycle?",type:"single",opts:["Sequential","Overlapping","Iterative","Empirical"],correct:[0]},
+  // ---- KNOWLEDGE CHECK PM ----
+  {q:"What step is crucial to take when responding to rapid changes?",type:"single",opts:["Avoiding change","Being adaptable","Being an observer","Planning well in advance"],correct:[1]},
+  {q:"Which era of project management relied on contributions from engineering?",type:"single",opts:["Early 2000s","Pre-history of PM","Mid-1950s","19th century"],correct:[2]},
+  {q:"What is one characteristic of servant leadership?",type:"single",opts:["Traditional","People-focused","Top-down","Task-focused"],correct:[1]},
+  {q:"What is another term used for a traditional project life cycle?",type:"single",opts:["Multi-phased","Adaptive","Predictive","Iterative"],correct:[2]},
+  {q:"What is a characteristic of a traditional project life cycle?",type:"single",opts:["Rolling wave planning","Continuous feedback cycle","Defined and linear","Constant course corrections"],correct:[2]},
+  {q:"Which goal does the Agile approach aim to achieve?",type:"single",opts:["Customer value through frequent deliveries and feedback","Speed","Budget management","Correctness of the solution"],correct:[0]},
+  {q:"Which statement describes the relationship of scope, cost, and time in a traditional project?",type:"single",opts:["Time is determined first, then scope and cost are calculated","Cost is determined first, then time and scope are calculated","Scope, time, and cost can be determined in any order","Scope is determined first, then time and cost are calculated"],correct:[3]},
+  {q:"What does the acronym PMBOK represent?",type:"single",opts:["Project Management Body of Knowledge","Product Manager's Board of Knowledge","Project Manager's Basis of Knowledge","Personnel Management Body of Knowledge"],correct:[0]},
+  {q:"Which statement describes an enabler?",type:"single",opts:["Enablers are the documents and deliverables resulting from performing the work","Enablers are underlying responsibilities","Enablers are an example of the work associated with a task","Enablers are high-level knowledge areas"],correct:[2]},
+  // ---- BUILDING AND TRAINING PROJECT TEAM ----
+  {q:"What approaches would result in the effective engagement of stakeholders?",type:"multi",opts:["Conduct cross-functional workshops","Involve them in creating the product vision","Explain the importance of their feedback for project success","Ignore difficult people","Be enthusiastic only at beginning of the project","Train key stakeholders on technology and processes"],correct:[0,1,2,5]},
+  {q:"What possible disadvantages of virtual teams do leaders need to manage?",type:"multi",opts:["Challenges in performance monitoring","Talent being spread over multiple regions","Obstacles in developing bonds between team members","High travel and relocation expenses","Difficulty in sharing experiences and knowledge","Miscommunication"],correct:[0,2,4,5]},
+  {q:"What are the four components of the RACI model?",type:"multi",opts:["Responsible","Request","Accountable","Consult","Communicate","Inform"],correct:[0,2,3,5]},
+  {q:"Which key factors are outlined in the team charter?",type:"multi",opts:["Guidelines for communication","Shared values","Authorization to begin work","Project schedule","Tools to be used","Process for decision-making"],correct:[0,1,4,5]},
+  {q:"What are the resource planning documents?",type:"multi",opts:["Resource breakdown structure","Project staff assignments","Organization chart","Delivery breakdown structure","Team performance assessments","Resource calendars"],correct:[0,1,4,5]},
+  {q:"Identify elements of the staffing management plan.",type:"multi",opts:["Work package cost estimates","People risks","Resource availability","Outsourcing needs","Resource skills","Training needs"],correct:[2,3,4,5]},
+  {q:"Which approaches are used in Agile projects to engage stakeholders?",type:"multi",opts:["Maintaining a shared product vision","Inviting stakeholders in retrospective","Demonstrating progress through short iterations","Welcoming changes in product development","Obtaining continuous feedback","Using a top-down approach in communication"],correct:[0,2,3,4]},
+  // ---- LEADING THE TEAM ----
+  {q:"What strategies can be used to improve team performance?",type:"multi",opts:["Developing skills and abilities for the team and individuals","Setting high performance benchmarks","Coaching the team in multitasking","Recognizing individual efforts and contributions","Quickly identifying problems","Encouraging practice of regular overtime work"],correct:[0,1,3,4]},
+  {q:"What stages of team development are outlined in the Tuckman ladder?",type:"multi",opts:["Adjourning","Performing","Hiring","Forming","Norming","Storming","Following"],correct:[0,1,3,4,5]},
+  {q:"What are the different types of needs in McClelland's Needs Theory?",type:"multi",opts:["Need for power","Need for self-actualization","Need for safety","Need for achievement","Need for affiliation"],correct:[0,3,4]},
+  {q:"What should team leaders do to manage diverse teams?",type:"multi",opts:["Promote collaboration","Facilitate mentoring and cross-training","Recognize communication gaps","Ignore cultural differences","Avoid ethnocentrism","Implement Vroom's Contingency Theory"],correct:[0,1,2,4]},
+  {q:"What is the formula used for calculating the number of communication channels?",type:"single",opts:["n(n-1/2)","n(n+1)/2","n[(n / 2) -1]","n(n-1)/2"],correct:[3]},
+  {q:"What do the individual components of the SMART acronym signify?",type:"multi",opts:["Specific","Reliable","Results oriented","Timely","Attainable","Approved","Measurable"],correct:[0,2,3,4,6]},
+  {q:"How many ways can communication occur in a team of 10 people?",type:"single",opts:["45","55","90","110"],correct:[0]},
+  {q:"What phases of team progression are identified in the Tuckman ladder framework?",type:"multi",opts:["Performing","Following","Forming","Monitoring","Adjourning","Norming","Storming"],correct:[0,2,4,5,6]},
+  {q:"What are some guidelines for providing feedback to team members?",type:"multi",opts:["Be sincere","Wait for big successes","Praise immediately","Only give positive feedback in person","Be specific","Do it often"],correct:[0,2,4,5]},
+  {q:"Match: Maslow's Safety need corresponds to which?",type:"single",opts:["Love, affection, and friends","Shelter and financial security","Accomplishment, respect, and appreciation","Air, water, food, and clothing"],correct:[1]},
+  {q:"Identify the duties of a servant leader in a team.",type:"multi",opts:["Driving the team","Providing essential resources","Removing obstacles","Safeguarding from interruptions","Communicating the product vision","Making decisions for the team"],correct:[1,2,3,4]},
+  {q:"Identify approaches to enhancing the effectiveness of a team.",type:"multi",opts:["Driving open and effective communication","Fostering a sense of trust among team members","Prioritizing personal competition within teams","Managing conflicts in a constructive manner","Supporting collaborative problem solving","Waiting for team-building opportunities"],correct:[0,1,3,4]},
+  {q:"Identify different elements of a basic communication model.",type:"multi",opts:["Written","Receiver","Verbal","Sender","Feedback","Encoding and decoding"],correct:[1,3,4,5]},
+  {q:"What important factors influence successful communication?",type:"multi",opts:["Project scope","Organizational structure","Stakeholder information needs","Frequency of communication","Target audience"],correct:[2,3,4]},
+  {q:"What are the key elements of active listening?",type:"multi",opts:["Inspiring","Performing","Reflecting","Attending","Following"],correct:[2,3,4]},
+  {q:"Match: Manager characteristics — which describe a Manager (not Leader)?",type:"multi",opts:["Emphasis on communication and purpose","Keeping the team engaged","People-centric","Goal is to get things done","Focus on processes and tasks"],correct:[3,4]},
+  {q:"What factors must be evaluated to identify stakeholder communication requirements?",type:"multi",opts:["Confidentiality constraints","The technology available","Organizational structure","Who needs to know and when","Time zones and languages","Project scope"],correct:[0,1,3,4]},
+  // ---- PRIORITIZING AND DELIVERING VALUE ----
+  {q:"Select the activities you perform during the release planning process.",type:"multi",opts:["Prioritize stories","Create user stories","Establish project goals","Decompose selected stories into tasks","Refine estimates"],correct:[0,1,2]},
+  {q:"What are best practices for writing effective personas?",type:"multi",opts:["Give equal importance to all personas","Identify goals","Exclude negative personas","Include negative personas","Base on reality","Be specific"],correct:[1,3,4,5]},
+  {q:"Identify the wireframing best practices prescribed by Agile.",type:"multi",opts:["Provide explanations","Keep them simple","Exclude explanations","Experiment","Avoid annotations","Use storyboards and annotations","Gather feedback"],correct:[0,1,3,5,6]},
+  {q:"What are the benefits of using story mapping?",type:"multi",opts:["It helps in planning releases","It helps prioritize the backlog in a product","It helps manage project human resources","It helps identify quality issues","It supports an iterative approach","It helps identify what to build first"],correct:[0,1,4,5]},
+  {q:"Identify the features used in a Kano analysis.",type:"multi",opts:["Satisfiers","Delighters","Must haves","Won't haves","Dissatisfiers"],correct:[0,1,4]},
+  {q:"What are the four categories described in the MoSCoW model?",type:"multi",opts:["Should Haves","Must Haves","Won't Haves","More Likely to Have","Would Haves","Could Haves"],correct:[0,1,2,5]},
+  {q:"What are the various progress tracking tools in Agile?",type:"multi",opts:["Iteration burndown chart","Defect report","Parking lot charts","Daily Scrum","Release burnup chart","Iteration retrospective"],correct:[0,1,2,4]},
+  {q:"Identify the necessary parameters for effective EVM.",type:"multi",opts:["Assumed team velocity","Estimated project costs","Actual project costs","Estimated backlog in story points","Requirements plan","Release plan"],correct:[0,2,3,5]},
+  {q:"Which methods can be used for measuring tangible benefits?",type:"multi",opts:["Expected monetary value","Net present value","Benefit cost ratio","Payback period","Internal rate of return","Internal residual ratio"],correct:[1,2,3,4]},
+  {q:"What components are documented within a benefits management plan?",type:"multi",opts:["Timeframe for realizing benefits","Benefits owner","Benefit communication schedule","Expected benefits and value","Evaluation criteria for vendor proposals","Metrics"],correct:[0,1,3,5]},
+  {q:"What are some of the key aspects of Agile value delivery?",type:"multi",opts:["The team does an inspection to assess value","The team focuses on minimum viable product","Value is delivered frequently","High risk items are delayed","Responding to change is key","The highest value features are delivered first"],correct:[1,2,4,5]},
+  {q:"What elements are covered during a Sprint Review session?",type:"multi",opts:["It elicits feedback and fosters collaboration","Stakeholders, the development team, the Scrum Master, and the product owner are in attendance","The product owner inspects the deliverables","Acceptance criteria are defined","The definition of done is finalized","The development team gives a product demo"],correct:[0,1,2,5]},
+  {q:"What are the different types of wastes in value stream mapping?",type:"multi",opts:["Knowledge loss","Iterative delivery","Customer inspection","Defects","Extra production or features","Task switching","Waiting or delays"],correct:[0,3,4,5,6]},
+  {q:"Which statements about information radiators are true?",type:"multi",opts:["They assist managers in task allocation","They serve as communication tools","They show individual performance","They help find the number of Sprints needed in a project","They show how much work can be done in a Sprint","They involve burnup and burndown charts"],correct:[1,3,4,5]},
+  {q:"Which drivers can be useful for executive leadership to influence value?",type:"multi",opts:["Financial drivers","Promotion of growth","Increased efficiency","Customers","Intangible value"],correct:[0,1,2]},
+  {q:"What Agile practices help enhance value generation?",type:"multi",opts:["Improving throughput systematically","Cross-training team members","Focusing on small work packages","Using specialists","Reducing task switching","Limiting work in progress","Increasing idleness of resources"],correct:[0,1,2,4,5]},
+  // ---- ESTIMATING AGILE PROJECT WORK ----
+  {q:"Which techniques are appropriate Agile estimating methods?",type:"multi",opts:["Building a detailed bottom-up cost account structure","T-Shirt sizing categories for items in the backlog","Wideband Delphi structured group estimation","Applying a deterministic work breakdown schedule with fixed dates","Using story points to express relative effort","Affinity estimation to quickly cluster items by size","Planning Poker with the whole team to converge on estimates"],correct:[1,2,4,5,6]},
+  {q:"Which actions should the team perform during an iteration planning session?",type:"multi",opts:["Select and agree on a realistic set of backlog items to include in the iteration scope","Finalize a detailed Gantt chart covering all project phases beyond the current iteration","Assign detailed daily to-do lists for each team member for the entire iteration in advance","Estimate the effort required for planned work using an agreed method","Clarify acceptance criteria and shared understanding for each item included in the iteration","Break selected backlog items into smaller, actionable tasks for team members"],correct:[0,3,4,5]},
+  {q:"Which of the following are valid benefits of implementing WIP limits?",type:"multi",opts:["Greater emphasis on maximizing individual busyness instead of managing overall flow","Earlier detection of process bottlenecks because constrained stages fill up and draw attention","Improved throughput over time as the team finishes work more steadily instead of in large batches","Reduced multitasking and context switching, allowing people to complete items more efficiently","More consistent lead times as work moves through a smoother, less congested process","Better coordination within the team because fewer items must be tracked at the same time","Higher volume of simultaneous initiatives, since more work can be started at once"],correct:[1,2,3,4,5]},
+  {q:"How can decreased lead time be accomplished?",type:"single",opts:["Reducing work in progress, or WIP","Multitasking","Increasing work in progress, or WIP","Decreasing throughput"],correct:[0]},
+  {q:"What type of information is depicted on a Kanban board?",type:"single",opts:["Quality control","Workflow","Activity resources","Defect rate"],correct:[1]},
+  {q:"What scheduling buffer types are used for Agile projects?",type:"multi",opts:["Iteration buffers","Project buffers","Feature buffers","Feeding buffers","Requirements buffers","Resources buffers"],correct:[1,2,3,5]},
+  {q:"What is the outcome of cycle time reduction?",type:"single",opts:["Increased costs","Decreased quality","Increased productivity","Longer product time-to-market"],correct:[2]},
+  {q:"Which guidelines should a coach emphasize about estimating and interpreting velocity?",type:"multi",opts:["If the team follows the same process, velocity will remain constant from sprint to sprint","Velocity is specific to each team and should not be used to rank teams against one another","Changes in team size or skills can legitimately cause shifts in the team's observed velocity","Velocity should be standardized so that all teams can be evaluated using the same metric","Velocity should be treated as an approximate capacity indicator rather than a rigid commitment","Initial velocity forecasts are less reliable than velocity based on multiple completed sprints","Using velocity to support conversations about scope and trade-offs is more effective than using it for individual performance evaluation"],correct:[1,2,4,5,6]},
+  {q:"Which waste type is associated with moving items between various tasks?",type:"single",opts:["Motion","Transportation","Waiting","Inventory"],correct:[1]},
+  {q:"What is an element of the process cycle efficiency (PCE) formula?",type:"single",opts:["Value-added time, lead time","Value-added time, cycle time","Cycle time, lead time","Work in progress (WIP), cycle time"],correct:[0]},
+  {q:"Which opportunity is related to the Kanban pull system?",type:"single",opts:["Increases turnaround time","Increases inventory","Conceals quality issues","Reduces inventory"],correct:[3]},
+  {q:"Which two methods are used for calculating project buffer?",type:"multi",opts:["Resource buffers","Square Root of CCPM","Square Root of the Sum of the Squares","Critical Chain Project Management"],correct:[2,3]},
+  {q:"What are the steps in the backlog grooming process?",type:"multi",opts:["Prepare stories","Determine next steps","Integrate learning","Calculate team velocity","Develop small stories","Gather and analyze user and customer feedback","Add project buffers"],correct:[0,1,2,4,5]},
+  {q:"Which type of waste goes against just-in-time (JIT) processing?",type:"single",opts:["Transportation","Defects","Overprocessing","Overproduction"],correct:[3]},
+  {q:"Which statements are true for a Kanban board?",type:"multi",opts:["It is also known as a visual information system","It can be created manually or electronically","It hides bottlenecks in the system","Swimlanes can be created","It can be tailored to a team's preference","It cannot be created using software tools"],correct:[0,1,3,4]},
+  {q:"What are some characteristics of lead time?",type:"multi",opts:["It is the time from when the work starts until the time it is completed","It is compared with value-added time to obtain the process cycle efficiency (PCE)","It is always expressed in minutes","It includes any delays or waiting time in between tasks"],correct:[1,3]},
+  {q:"Identify the process characteristics in Little's Law.",type:"multi",opts:["Resources","Work in progress (WIP)","Lead time","Cycle time","Throughput"],correct:[1,2,4]},
+  // ---- PROJECT SCOPE ----
+  {q:"What types of requirements are reviewed while shaping product scope?",type:"multi",opts:["Business","Nonfunctional","Budget","Functional","Prioritisation"],correct:[0,1,3]},
+  {q:"How do traditional projects enable teams to reach group agreement?",type:"multi",opts:["Multicriteria decision analysis","Majority","Plurality","Dictatorship","Unanimity","Focus group"],correct:[1,2,3,4]},
+  {q:"What three elements make up the scope baseline in a traditional project?",type:"multi",opts:["WBS dictionary","Scope statement","Work breakdown structure (WBS)","Rolling wave planning","Elevator statement"],correct:[0,1,2]},
+  {q:"What standard planning layers are commonly used in Agile projects?",type:"multi",opts:["Release planning","Iteration planning","Product roadmap","Daily planning","Focus groups","Product vision","Scope baseline"],correct:[0,1,2,3,5]},
+  {q:"What benefits are commonly achieved by defining an MVP during product development?",type:"multi",opts:["It supports adapting and incorporating changes","It leads to creating an elevator statement","It allows fast feedback from customers","It helps define the product vision box","It's complete enough to be useful","It's small enough that it is not the entire project scope"],correct:[0,2,4,5]},
+  {q:"What four techniques are applied to rank requirements using relative prioritisation?",type:"multi",opts:["Value analysis","MoSCoW method","100-point method","Play money","Dot voting","MVP"],correct:[1,2,3,4]},
+  {q:"How can consensus be achieved in a traditional setting when deciding requirements?",type:"multi",opts:["Dictatorship","Majority","Facilitated meeting","Plurality","Focus group","Unanimity"],correct:[0,1,3,5]},
+  {q:"What requirement classifications are used when defining overall product scope?",type:"multi",opts:["Business","Schedule","Functional","Nonfunctional","Budget"],correct:[0,2,3]},
+  {q:"What elements form the scope baseline in a traditional project approach?",type:"multi",opts:["Work breakdown structure","Project charter","Elevator statement","Scope statement","WBS dictionary"],correct:[0,3,4]},
+  {q:"What value does creating a minimum viable product provide?",type:"multi",opts:["Allows fast feedback from the customer","Is complete enough to be useful","Supports adapting and incorporating changes","Helps define the product vision box","Leads to creating an elevator statement","Is small enough that it is not the entire project scope"],correct:[0,1,2,5]},
+  {q:"What tools support relative feature prioritisation in Agile environments?",type:"multi",opts:["Value engineering","100-point method","Play money","Dot voting","MVP","MoSCoW method"],correct:[1,2,3,5]},
+  {q:"What advantages can teams gain by applying story mapping?",type:"multi",opts:["Knowing what to build first","Evaluating each feature based on multiple criteria","Reprioritising a product backlog","Finalising the scope statement","Visualising the scope of a project","Building using an iterative approach"],correct:[0,2,4,5]},
+  {q:"What planning levels are commonly applied within Agile project execution?",type:"multi",opts:["Product vision","Scope baseline","Product roadmap","Release planning","Daily planning","Focus groups","Iteration planning"],correct:[0,2,3,4,6]},
+  {q:"What main reasons exist for developing a detailed WBS?",type:"multi",opts:["Designed to replace all other project documents including charter","Supports monitoring/control via clear work packages","Documents personal preferences of senior stakeholders","Decomposes deliverables into manageable components","Foundation for building schedule/estimating resources","Defines full scope and prevents unapproved work"],correct:[1,3,4,5]},
+  {q:"What does the control scope process aim to do?",type:"multi",opts:["Avoid the use of scope change requests","Monitor scope changes","Perform integrated project changes","Prevent and correct scope creep"],correct:[1,3]},
+  {q:"Which statement defines project scope?",type:"single",opts:["The extra work required to complete the project","The total work required to complete the deliverables a project is intended to produce","The unexpected changes that could delay the project","The features of the product that a project is intended to produce"],correct:[1]},
+  // ---- PROJECT SCHEDULE ----
+  {q:"Which activity attributes help when developing the schedule?",type:"multi",opts:["WBS dictionary","Geographic area","Predecessors and successors","WBS ID","Float","Activity description","Resource requirements"],correct:[1,2,3,5,6]},
+  {q:"What are the four different types of dependencies that may exist between activities?",type:"multi",opts:["Discretionary","External","Finish to Finish","Internal","Mandatory","Finish to Start"],correct:[0,1,3,4]},
+  {q:"What are characteristics of forward pass?",type:"multi",opts:["Calculations are done from left to right on the network diagram","Can use the zero method","Shows critical path of the project","Can use the one method","Float for each activity is calculated","Project duration is established"],correct:[0,1,3,5]},
+  {q:"What are some characteristics of critical path?",type:"multi",opts:["The critical path is determined in a forward pass calculation","Any delay of activities on the critical path will delay the project","Float is the difference between late finish and early finish","It has at least one activity with non-zero float","Backward pass calculations are a must to determine the critical path","It has activities with zero float"],correct:[1,2,4,5]},
+  {q:"What should the schedule management plan include?",type:"multi",opts:["Enterprise environmental factors (EEFs)","Unit of measure","Estimation techniques","Process for tracking and reporting","Critical path","Gantt chart","Level of accuracy"],correct:[0,1,2,3,6]},
+  {q:"What are the characteristics of the Agile product roadmap?",type:"multi",opts:["The granularity of the functionality is low for lower priority backlog items","With each release, the product becomes more robust","It involves detailed planning for the entire roadmap","It cannot be changed once finalized","It considers priorities against the development team's velocity","It's subject to change as the backlog is refined"],correct:[0,1,4,5]},
+  {q:"Which activities or events occur in a Scrum?",type:"multi",opts:["Reviewing detailed project scope","Product owner presents the prioritized backlog of requirements","Sprint Planning","Sprint Review","Sprint Retrospective","Detailed planning for the entire project"],correct:[1,2,3,4]},
+  {q:"Which techniques may reduce overall schedule duration?",type:"multi",opts:["Lags","Critical path methods","Crashing","Fast tracking","Leads"],correct:[2,3,4]},
+  {q:"What are characteristics of Activity on Node (AON)?",type:"multi",opts:["Name of the activity is shown on an arrow","Nodes between arrows serve as pivot points for activities","Start to Start dependency relationship cannot be used","Name of the activity is shown within a Node","Arrows demonstrate dependencies between activities","Finish to Start dependency relationship can be used"],correct:[3,4,5]},
+  {q:"Activities M and N both flow into successor P. On the backward pass, which reference value should be used to set the late finish of M and N?",type:"single",opts:["The early start of Activity P","The early finish of Activity P","The late finish of Activity P","The late start of Activity P"],correct:[3]},
+  {q:"If Activity C has the same early and late finish of 9 and the same early and late start of 3, what can you determine about the float on Activity C?",type:"single",opts:["The float has been used","There is a float of 6","There is a float of -6","There is no float"],correct:[3]},
+  {q:"Task C can begin only after Task B completes. If the early finish of B is 3, what is the early start of C?",type:"single",opts:["6","4","5","3"],correct:[1]},
+  {q:"The earned value of a project is $30,000 and the planned value is $53,000. What is the SPI rounded to two decimal points?",type:"single",opts:["1.77","0.566","0.57","0.56"],correct:[2]},
+  {q:"Your sponsor says the project must be completed one month early no matter what it costs, with no cuts to features or quality. What's the best way to accomplish this?",type:"single",opts:["Crashing","Fast tracking","Resource leveling","Resource smoothing"],correct:[0]},
+  {q:"Which documents are created during schedule planning?",type:"multi",opts:["Schedule performance index","Milestone chart","Network diagram","Schedule variance","Gantt chart"],correct:[1,2,4]},
+  {q:"What are the components of the Scrum framework?",type:"multi",opts:["Scrum Team","Work packages","Project manager","Sprint Review meeting","Product Backlog","Daily Scrum meeting","Sprint Planning meeting"],correct:[0,3,4,5,6]},
+  // ---- PROJECT COSTS ----
+  {q:"Which generally describes the bottom-up estimating approach?",type:"multi",opts:["It's a quick and easy process requiring little effort","It starts with detailed estimates for specific work packages or activities","It provides cost estimates that are usually more precise than high-level methods","It supports building project totals by summing estimates from lower-level components","It can require more time and effort to prepare than top-down estimating","It's reliable but inaccurate, relying entirely on guesswork"],correct:[1,2,3,4]},
+  {q:"Which statements correctly describe analogous estimating?",type:"multi",opts:["It depends on going through the full process of creating a work breakdown structure","It relies on historical data from one or more comparable past projects","It is generally quicker to perform than detailed bottom-up estimating","It's a reliable and accurate estimation method","Its accuracy depends strongly on how similar the previous and current projects are"],correct:[1,2,4]},
+  {q:"Which components are included in finalising the budget?",type:"multi",opts:["Analogous estimations","Parametric estimations","Management Reserve","Work package cost estimates","Contingency reserve"],correct:[2,3,4]},
+  {q:"Which formulas can be used to calculate EAC?",type:"multi",opts:["EAC = EV / AC","EAC = AC + ETC","EAC = AC + [ (BAC-EV) / (CPI x SPI) ]","EAC = EV - AC","EAC = BAC / CPI","EAC = AC + (BAC - EV)"],correct:[1,2,4,5]},
+  {q:"What are the advantages of using story points?",type:"multi",opts:["Promotes competition","Removes pressure and emotion","Uses the Fibonacci sequence","Serves as a reference for future estimates","Is quick","Helps remove competition between teams"],correct:[1,3,4,5]},
+  {q:"Which statements best capture what velocity measures?",type:"multi",opts:["It is used in project forecasting","It is different than capacity","Rate at which money is spent","Is same as capacity","Actual amount of development work completed in a sprint","Usually measured in story points"],correct:[0,1,4,5]},
+  {q:"PERT three-point estimation: O=30, P=75, M=45. What is the estimated duration using the standard (Beta) formula?",type:"single",opts:["41 minutes","52 minutes","48 minutes","44 minutes"],correct:[2]},
+  {q:"CPI has remained below 1.0 with no expected improvement. Which formula determines EAC using the deterministic approach?",type:"single",opts:["EAC = AC + EV","EAC = (BAC - AC) / CPI","EAC = BAC / CPI","EAC = BAC - EV"],correct:[2]},
+  {q:"Which items are formally required as inputs when setting up an EVM system?",type:"multi",opts:["A defined scope baseline that includes the WBS and work packages","A lessons-learned register from similar past projects","A stakeholder engagement plan detailing communication preferences","An approved cost baseline that defines the planned value over time","A time-phased schedule baseline for measuring progress against plan"],correct:[0,3,4]},
+  {q:"When totalling cost of quality, which expenditures are costs of non-conformance?",type:"multi",opts:["Training sessions conducted to help team members follow quality procedures","Warranty repairs and replacements provided to customers after product delivery","Rework needed to fix defects discovered after a deliverable has been completed","Planned process audits carried out during execution to prevent defects","Scrap and reprocessing caused by errors found during internal quality checks","Quality planning activities performed early to define acceptance criteria","Routine inspections carried out to verify that a deliverable meets specification"],correct:[0,1,2,4,5]},
+  {q:"Which statements accurately describe the top-down (analogous) estimating approach?",type:"multi",opts:["It produces highly detailed activity-level estimates for each work package","It is only appropriate for projects that use identical resources and schedules as past projects","It is typically less time-consuming than preparing a full bottom-up estimate","It can be used to establish an initial budget range early in project planning","Its reliability improves when the estimator has experience with similar prior projects"],correct:[2,3,4]},
+  {q:"Which are characteristics of the bottom-up estimation technique?",type:"multi",opts:["It's accurate, but unreliable","It's reliable, but inaccurate","It's based on work packages","It's accurate and reliable","It's highly detailed","It's time consuming"],correct:[2,3,4,5]},
+  // ---- PROJECT QUALITY ----
+  {q:"What are some of the aspects of the relationship and distinction between quality management and quality control?",type:"multi",opts:["Updates to processes can be added to the lessons learned register","Issues highlighted affect the deliverable's schedule baseline","A change request is submitted to correct the cause once it has been identified","Quality control helps to reveal faulty processes","A root cause analysis can be used to identify causes of defects highlighted during quality control"],correct:[2,3,4]},
+  {q:"What statements describe characteristics of Six Sigma?",type:"multi",opts:["It measures 4.1 defects per million opportunities","It is composed of the define, measure, analyze, improve, and control phases","It has a transfer function that is used to relate the inputs of a process to the outputs","It is used extensively in manufacturing and service industries","It is a six-step process"],correct:[1,2,3]},
+  {q:"What are the four stages in the Lean methodology?",type:"multi",opts:["Solution implementation","Solution design","Customer surveys","Continuous improvement","Addition of substitute processes","Identification of an opportunity"],correct:[0,1,3,5]},
+  {q:"Which of these are commonly used metrics for quality management?",type:"multi",opts:["Value Stream Maps","Checklists","Scatter Diagrams","Fishbone Diagrams","Control Charts","Histograms"],correct:[1,2,4,5]},
+  {q:"Which of these are characteristics describing Sprint Review?",type:"multi",opts:["Development team demos the product","Product owner inspects the deliverable","Development team, PO, SM, and stakeholders participate","Team plans and commits to the Sprint goal","Team reflects on what went well, what could be done better","Elicits feedback and fosters collaboration","Team and PO adapt product backlog"],correct:[0,1,2,5,6]},
+  {q:"What is the definition of Quality as per ISO standards?",type:"single",opts:["Delivering products with high precision and high accuracy","Quality is following the processes","Combination of product and project quality","The degree to which inherent characteristics fulfill requirements"],correct:[3]},
+  {q:"Which options represent commonly used improvement strategies?",type:"multi",opts:["Kaizen","Five Sigma","Just-in-Time","Tactical Quality Measurement","PDCA cycle"],correct:[0,2,4]},
+  {q:"Which are wastes that can exist within a project organization?",type:"multi",opts:["Inventory","Defects","Transport","Waiting","80/20 rule","Value Stream Mapping","Over processing"],correct:[0,1,2,3,6]},
+  {q:"Which are valid types of change requests that might be raised in response to a quality issue?",type:"multi",opts:["A request to add an extra deliverable that is not related to the quality issue","A defect repair request to fix a specific nonconforming deliverable","A preventive action request to avoid similar quality issues in the future","A corrective action request to remove the cause of an existing quality problem","A request to speed up the schedule without addressing the defect"],correct:[1,2,3]},
+  {q:"Which are the different types of tests conducted in agile testing?",type:"multi",opts:["Continuous Testing","Unit testing","Integration testing","Regression testing","Functional testing","Walk-throughs"],correct:[1,2,3,4]},
+  {q:"What are the different stages in a Deming cycle?",type:"multi",opts:["Act","Plan","Do","Prioritize","Check","Brainstorm"],correct:[0,1,2,4]},
+  {q:"Which are different components of the Cost of Conformance?",type:"multi",opts:["Warranty","Scrapping","Documenting processes","Maintaining equipment","Inspecting","Testing","Training"],correct:[2,3,4,5,6]},
+  {q:"Which of these will a Quality Management Plan establish?",type:"multi",opts:["Suggested histograms","Level of accuracy required","Processes for assuring quality","How the quality process will be implemented","Liability claims required","Level of precision required","Requirements for assuring quality"],correct:[1,2,3,5,6]},
+  {q:"Which describes how Acceptance Criteria and Definition of Done are similar?",type:"multi",opts:["Both help reduce ambiguity about done by setting shared, testable conditions","Both are used during review or testing to decide if a work item can be accepted","Both are agreed upon by the team and stakeholders rather than imposed unilaterally","Both are concerned primarily with budgeting and resource allocation for the release","Both support consistent quality by making completion expectations explicit and visible","Both describe the organization's annual strategic objectives for the product line","Both provide clear benchmarks the team uses to judge whether work is finished satisfactorily"],correct:[0,1,2,4,6]},
+  // ---- PROJECT RISK ----
+  {q:"Select appropriate response actions for downside risks.",type:"multi",opts:["Escalate","Avoid","Transfer","Accept","Share","Mitigate","Enhance"],correct:[0,1,2,3,5]},
+  {q:"What techniques support the process of identifying project risks?",type:"multi",opts:["Delphi technique","Expected monetary value","Root cause analysis","Assumption analysis","Monte Carlo technique","SWOT analysis","PESTLE"],correct:[0,2,3,5,6]},
+  {q:"What statements accurately describe risk?",type:"multi",opts:["Risks need not be monitored or managed","Risks cannot be identified in advance","Risks can be negative","Risks have an impact on project objectives","Risk is an event which might take place during a project","Risks can be considered opportunities"],correct:[2,3,4,5]},
+  {q:"What response options are available when addressing positive risks?",type:"multi",opts:["Exploit","Transfer","Share","Mitigate","Escalate","Accept","Enhance"],correct:[0,2,4,5,6]},
+  {q:"Which terms are specifically used in risk management?",type:"multi",opts:["Residual risk","Root cause analysis","Risk appetite","Risk trigger","Risk threshold","Risk tolerance","Delphi technique"],correct:[0,2,3,4,5]},
+  {q:"What root-cause analysis methods support effective risk discovery?",type:"multi",opts:["Cause and effect diagram","What-if analysis","Postmortem","Premortem","Delphi technique"],correct:[0,1,3]},
+  {q:"What are appropriate interpretations of risk scores?",type:"multi",opts:["Risk scores of medium and low-medium need attention from project team","Risk scores of high and very high need attention from the project team","Risk scores of low and low-medium need to be ignored","Risk scores of high and medium do not need action from the team","Risk scores of low may not need any action from team"],correct:[0,1,4]},
+  {q:"What steps can a team take as part of the premortem activities in risk management?",type:"multi",opts:["Document effectiveness of risk responses","Brainstorm and document","Create solutions","Conduct risk audit","Identify possible reasons for the problems","Rank reasons"],correct:[1,2,4,5]},
+  {q:"Which tools and techniques can you use to perform qualitative risk analysis?",type:"multi",opts:["Expert judgment","Meetings","Risk categorization","Historical information","Probability and impact matrix","Cost baseline","Interviews","Risk probability and impact assessment","Interpersonal and team skills"],correct:[0,1,2,4,6,7,8]},
+  {q:"What is the purpose of sensitivity analysis?",type:"single",opts:["Identify which risks may impact project objectives","Evaluate whether the risk of building a product in-house outweighs the risks involved in outsourcing","Calculate the values of the positive versus negative impacts of the risk events","Determine which risks have the greatest potential impact on a project"],correct:[3]},
+  {q:"What are the common types of continuous distribution?",type:"multi",opts:["Uniform","Triangular","Normal","Square","Beta","Curved"],correct:[0,1,2,4]},
+  {q:"Your analysis shows a 25% probability that remodeling a machine will take 12 days and a 75% probability it will take 32 days. What is the EMV?",type:"single",opts:["32 days","21 days","8 days","27 days"],correct:[3]},
+  {q:"There's a 40% probability new machinery takes 14 days to arrive and 60% probability it takes 28 days. What is the total EMV for ordering the machinery?",type:"single",opts:["19.6 days","22.4 days","11.2 days","28 days"],correct:[1]},
+  {q:"Which techniques would be most appropriate for use during quantitative risk analysis?",type:"multi",opts:["Expert judgment combined with analytical techniques to quantify the overall risk profile","Use of probability distributions, correlation modeling, and simulation to evaluate risk exposure","Brainstorming, qualitative scoring matrices, and simple high-medium-low ratings","Lessons learned reviews, historical issue logs, and project status meetings","Sensitivity analysis, tornado diagrams, and probabilistic modeling of cost and time","Monte Carlo simulation, decision tree analysis, and expected monetary value calculations"],correct:[0,1,4,5]},
+  {q:"When creating a risk register, which kinds of information are most appropriate to record for each risk entry?",type:"multi",opts:["The response approach and planned mitigation or contingency steps","A concise description of the risk and how it might affect outcomes","The designated risk owner or accountable role","The organization's annual profit and loss statement","The project's entire work breakdown structure","Tracking data such as review dates and current risk status","The likelihood rating and potential severity of the risk"],correct:[1,2,4,5,6]},
+  {q:"Which illustrate effective approaches to managing project risks in Agile delivery?",type:"multi",opts:["The project manager maintains a static risk list that is not shared with the Agile team","Risky assumptions are made transparent and validated through frequent feedback from customers and stakeholders","Risks are tracked only against the original project plan and are not considered when adjusting the product backlog","Sprint reviews and retrospectives are used to reassess known risks and uncover new ones on a regular basis","Work is reordered so that high-risk features are tackled earlier rather than postponed to later releases","Teams plan experiments or spikes in early iterations to explore uncertain technical or business areas"],correct:[1,3,4]},
+  {q:"Which two methods are used for calculating project buffer (risk)?",type:"multi",opts:["Resource buffers","Square Root of CCPM","Square Root of the Sum of the Squares","Critical Chain Project Management"],correct:[2,3]},
+  {q:"What questions should a risk identification team ask about each project assumption and constraint?",type:"multi",opts:["If the assumption or constraint proves false, what effect might it have on the project?","If the assumption or constraint proves correct, what impact will it have on future projects?","To what extent is the assumption or constraint likely to be valid?","Does the assumption or constraint conform to organizational policy?"],correct:[0,2]},
+  {q:"What does project risk mean?",type:"single",opts:["A delay which has caused a revision in the project schedule","An old, well-established principle or procedure","An upcoming event to review the project objectives","An event that might happen and would impact one or more project objectives"],correct:[3]},
+  {q:"Which three factors of risk do you need to determine in order to reduce uncertainty?",type:"multi",opts:["Whether the majority of stakeholders are aware of the risk","What the impact of the risk will be","How likely the risk is to happen","Whether the risk has been reported in the news recently","The cause of the risk"],correct:[1,2,4]},
+  {q:"When is interviewing considered a good method for gathering risk information?",type:"single",opts:["When brainstorming or other group sessions are not possible or appropriate","When assessing the merit of risks identified in a brainstorming session","When you need to analyze the various root causes that give rise to risks","When historical data is unavailable"],correct:[0]},
+  {q:"Which documents would you typically gather information from when using checklists to identify risks?",type:"multi",opts:["The risk register from a similar previous project","The risk breakdown structure","The project charter","A documented change request"],correct:[0,1]},
+  {q:"Which three techniques are used for planning risk management?",type:"multi",opts:["Checklist analysis","Meetings","Information gathering","Stakeholder analysis","Documentation reviews","Expert judgment"],correct:[1,3,5]},
+  {q:"Which activities should you perform as part of document analysis to identify project risks?",type:"multi",opts:["Study the inputs to the process for contradictions, errors, or missing information","Revise systems for tracking risks","Check product specifications","Investigate the constraints and assumptions in the project scope statement","Check the quality of subsidiary project management plans"],correct:[0,3,4]},
+  {q:"Which guidelines are used for arranging a brainstorming session to identify project risks?",type:"multi",opts:["Selecting senior management only","Inviting suppliers and external experts to the brainstorming session","Recording all ideas","Defining a specific objective for the session","Encouraging participants to build on each other's ideas","Involving participants from diverse backgrounds and areas of expertise"],correct:[2,3,4,5]},
+  {q:"Match: Known vs Unknown risk — which apply to UNKNOWN risk?",type:"multi",opts:["Has been identified and analyzed","Uses management reserves","Uses contingency reserve","Cannot be managed proactively","Is not included in risk register"],correct:[1,3,4]},
+  // ---- COMPLIANCE ----
+  {q:"How do quality metrics help in project compliance?",type:"multi",opts:["Identify technical issues","Establish metrics required to meet specific compliance parameters","Identify gaps in task scheduling and planning","Ensure the correct things are measured","Establish or adjust processes to meet compliance requirements"],correct:[1,3,4]},
+  {q:"When should a noncompliance issue be escalated to the leadership team?",type:"multi",opts:["When noncompliance is identified","When the customer has reported a minor error in a deliverable","When it is determined that noncompliance is outside of the range of tolerance","When the matter exceeds the threshold","When an audit is planned"],correct:[0,2,3]},
+  {q:"Through corporate social responsibility, organizations contribute to society through compliance in which categories?",type:"multi",opts:["Integrity","Sponsorship and charity","Review and rework","Investment in sustainability","Loyalty","Ethical practices and values"],correct:[0,1,3,5]},
+  {q:"What are the categories of compliance?",type:"multi",opts:["Ethical practices","Leadership style","Occupational safety and health","Quality","Organizational culture","Social responsibility"],correct:[0,2,3,5]},
+  {q:"What are possible risk responses for threats (compliance)?",type:"multi",opts:["Transfer","Avoid","Accept","Reserve","Escalate","Discuss","Mitigate"],correct:[0,1,2,4,6]},
+  {q:"Which factors help build an ethical organization?",type:"multi",opts:["Accountability","Provision of incentives to win the bid","Shared ownership for success as well as failures","Mutual respect","Compromise of standards and quality practices in order to meet delivery dates"],correct:[0,2,3]},
+  {q:"What are the parts of the Project Management Information System?",type:"multi",opts:["Accounting program","Knowledge management software","Project management program","Collaboration software","Configuration management system","Organizational regulatory policies","Organization strategies and roadmap"],correct:[0,1,2,3,4]},
+  {q:"Which stakeholders can be sources for compliance requirements and regulations on a project?",type:"multi",opts:["Family members of the project team","Creditors","Market competitors","Customers","End users","Suppliers","Government"],correct:[1,3,4,5,6]},
+  {q:"Which statements are true about variance analysis?",type:"multi",opts:["It is done to determine the difference between actual work against the plan","It determines only scheduled variance and not cost variance","It is performed in order to compare actual performance against the plan","It is an ongoing analysis to monitor and predict the future trends for the project","It should be done only by customer representatives"],correct:[0,2,3]},
+  {q:"What would be required to make sure compliance is incorporated into a project?",type:"multi",opts:["Managing changes","Identifying and analyzing requirements","Tracking changes","Performing cost benefit analysis","Conducting root cause analysis (RCA)"],correct:[0,1,2]},
+  {q:"What are possible causes of errors and problems for a project (compliance threats)?",type:"multi",opts:["Errors in audits and testing","Escaped defects","Organizational process assets (OPAs)","Lack of information","Scope changes","Missed steps"],correct:[0,1,3,5]},
+  {q:"What are the reasons to establish metrics and conduct a compliance audit through an independent person or team?",type:"multi",opts:["To identify gaps","To find errors or problems in deliverables","To ensure compliance with organizational standards","To verify industry compliance","To avoid using benchmarked best practices"],correct:[0,2,3]},
+  {q:"What are steps for measuring project compliance?",type:"multi",opts:["Confirm compliance and identify variance using project performance data","Take corrective actions as appropriate","Establish a range of tolerance during planning for each compliance metric","Update the organization process assets","Create reports for the customer","Create a quality management plan that includes metrics for compliance"],correct:[0,1,2,5]},
+  {q:"Which actions are part of the project manager's responsibilities for analyzing the consequence of noncompliance?",type:"multi",opts:["Comparing actual and planned data for various metrics","Tracking compliance-related risks","Recognizing constraints from compliance and business rules","Scheduling weekly review meetings with the team","Assigning owners to compliance-related project work","Identifying requirements related to compliance"],correct:[1,2,4,5]},
+  {q:"What are the different approaches through which organizations can manage regulatory compliance work?",type:"multi",opts:["Ongoing with development","At the time of conceptualization of the product","After product development","Before product development","Hybrid"],correct:[0,2,4]},
+  {q:"Which key factors should be considered when managing a multicultural and diverse team?",type:"multi",opts:["Varied perspectives","Establishment of a community of practitioners","Diverse culture","Work schedule","Assured robust and timely delivery","Value drivers"],correct:[0,2,3,5]},
+  {q:"What three statements about project ethics are true?",type:"multi",opts:["Making ethical decisions is an ongoing process","Being ethical is based entirely on successes","Being ethical is not optional","Ethics should be part of every business action","Ethics is solely about following laws"],correct:[0,2,3]},
+  // ---- PROCUREMENT ----
+  {q:"Which of the following should you take into account when performing a make-or-buy analysis?",type:"multi",opts:["The personal preference of the project manager","The capacity and availability of internal resources","The color and branding of the supplier's marketing materials","The organization's available in-house skills and expertise","The organization's long-term strategic plans related to this capability","The time needed to develop the product in-house compared with vendor lead times","The total cost of performing the work internally versus outsourcing it"],correct:[1,3,4,5,6]},
+  {q:"Which describe commonly used contract forms or recognized variations?",type:"multi",opts:["One-time purchase orders used only for internal budgeting, with no legal enforceability","Cost-reimbursement arrangements, including cost-plus and other cost-based structures","Unit-rate contracts where payment is based on agreed prices per measurable unit of work","Fixed-price agreements, including variants such as firm-fixed-price or fixed-price with incentives","Verbal, handshake-only agreements without any written documentation","Time-and-materials contracts that pay for labor hours and materials consumed"],correct:[1,2,3,5]},
+  {q:"Which types of contracts can be used in agile projects?",type:"multi",opts:["Fixed scope and cost contract","Service contracts for the series of fixed price contracts","Non cost-reimbursable contracts","Cost-reimbursable contracts","Incentive contracts","Time-and-materials contracts","Not to exceed with fixed-fee contracts"],correct:[1,3,4,5,6]},
+  {q:"Which of the following correctly represent the standard subtypes of fixed-price contracts?",type:"multi",opts:["Cost Reimbursable with Target Cost (CRTC)","Fixed Price Incentive Fee (FPIF)","Cost Plus Incentive Fee (CPIF)","Firm Fixed Price Level of Effort (FFP-LOE)","Cost Plus Percentage of Cost (CPPC)"],correct:[0,1,3]},
+  {q:"Which are elements of the staffing management plan?",type:"multi",opts:["Work package cost estimates","People risks","Resource availability","Outsourcing needs","Resource skills","Training needs"],correct:[2,3,4,5]},
+  {q:"Which of the following are typical features of time and material (T&M) contracts?",type:"multi",opts:["They usually require active oversight of invoices and work logs to keep expenditures under control","Labor charges are based on actual time spent, using predetermined hourly or daily rates","The buyer pays a lump sum that does not change regardless of how long the work takes","The overall financial risk is more shared between buyer and seller than in a pure fixed-price arrangement","They are frequently used when the work effort cannot be predicted with precision in advance","They completely insulate the buyer from any risk of cost increases during the project"],correct:[0,1,3,4]},
+  {q:"When developing the procurement management plan, which elements are normally documented in that plan?",type:"multi",opts:["Forecast of the organization's long-term enterprise-wide purchasing portfolio","The seller's internal staffing plans for delivering the contracted work","Formats and requirements for procurement documents such as RFIs, RFPs, and bid packages","Criteria and processes for selecting sellers and awarding contracts","Methods for monitoring contract performance and managing vendor relationships","Approach for coordinating procurement activities with the project schedule and budget"],correct:[2,3,4,5]},
+  {q:"When performing a comprehensive make-or-buy assessment, which factors should be evaluated?",type:"multi",opts:["The organization's existing capacity and infrastructure to provide the service internally","The risk exposure associated with internal delivery versus outsourcing the service","The preferred payment method of the selected vendor's finance department","The comparative schedule performance of in-house work versus contracted services","The design preferences of the executive sponsor","The organization's long-term strategic objectives concerning retaining or outsourcing this capability","The total cost of ownership for internal delivery versus external procurement"],correct:[0,1,3,5,6]},
+  {q:"Which of the following variations of common contract types are used?",type:"multi",opts:["RFQ","Incentive fees","Letter of Intent (LoI)","Awards","Economic price adjustment"],correct:[1,3,4]},
+  {q:"Which of these areas of the contract can buyers and sellers negotiate while finalizing the contract?",type:"multi",opts:["Evaluation Criteria","Bid documents","Authority to make changes","Procurement statement of work","Nondisclosures and information privacy","Terms and conditions"],correct:[2,3,4,5]},
+  {q:"Identify the three cost-reimbursable contract variations.",type:"multi",opts:["Cost Plus Award contract","Cost Plus Fee (Cost-Plus-Fee) contract","Cost Plus Incentive contract","Time and Materials (T&M)","Lump Sum (fixed total price) contract"],correct:[0,1,2]},
+  {q:"On an agile initiative, which options describe common features of a fixed price work package arrangement?",type:"multi",opts:["Scope for each package is left intentionally vague so it can be redefined without updating the contract","The supplier assumes the primary responsibility if the actual delivery cost is higher than planned for that package","Each contracted chunk of work is priced as a separate, self-contained unit","Payment for a work package scales linearly with the number of hours the vendor reports","The buyer agrees upfront to pay a predetermined amount when the specified outcomes for a package are delivered","The contract can group multiple work packages, each with its own fixed price tied to acceptance of defined deliverables"],correct:[1,2,4,5]},
+  {q:"In planning a competitive procurement, which are examples of solicitation documents?",type:"multi",opts:["Invitation for Bid (IFB) or Invitation to Tender","Request for Quotation (RFQ)","Non-Disclosure Agreement (NDA)","Request for Proposal (RFP)","Request for Information (RFI)","Memorandum of Understanding (MOU)"],correct:[0,1,3,4]},
+  {q:"In formal procurement management, which contract types are recognized as fixed-price variants?",type:"multi",opts:["Fixed-Price-Incentive-Fee (FPIF) contracts","Cost-Plus-Award-Fee (CPAF) contracts","Firm-Fixed-Price (FFP) contracts","Time and Materials (T&M) contracts","Fixed-Price-with-Economic-Price-Adjustment (FPEPA) contracts"],correct:[0,2,4]},
+  {q:"For a complex project component, which steps should form part of a structured make-or-buy evaluation?",type:"multi",opts:["Develop cost estimates for both in-house development and external procurement, including indirect and overhead costs","Rely on past decisions from unrelated projects without reviewing current conditions","Define clear requirements and acceptance criteria for the component before comparing options","Commit to the first supplier who responds positively to an informal inquiry","Analyze organizational strengths and weaknesses to determine the feasibility of internal delivery","Assess non-financial factors such as schedule impact, risk profile, and strategic alignment for each alternative"],correct:[0,2,4,5]},
+  {q:"To build a firewall, outsourcing is more expensive at first, breakeven is day 100, expected usage at least one year. What's the best make-or-buy decision?",type:"single",opts:["Build it in-house and then outsource after 100 days","Build the network firewall in-house","Use an outside vendor","Outsource until day 100 and then build it in-house"],correct:[2]},
+  {q:"When should a buyer expect offers to differ significantly when submitting an invitation for bid (IFB)?",type:"single",opts:["Offers which will differ significantly in solution approach and price","Offers which are similar enough to allow a selection based on price","Offers which are not primarily written to win against competition","General information on a seller's ability to provide the goods or services"],correct:[1]},
+  // ---- AGILE FUNDAMENTALS ----
+  {q:"Identify some of the elements you include in a project charter (Agile).",type:"multi",opts:["Detailed schedule plan","Risks and mitigation","Success conditions or criteria","Resource management plan","Priorities and compromises","Team roles"],correct:[1,2,4,5]},
+  {q:"Which characteristics describe the Agile method?",type:"multi",opts:["It identifies issues earlier, and changes are easier to implement","It allows for feedback to be obtained early and often","It is iterative","It's only applicable to long-term projects","It is incremental","It focuses on the costliest items first","It focuses on the highest-value items first"],correct:[0,1,2,4,6]},
+  {q:"Identify the five ADAPT requirements for transitioning to an Agile environment.",type:"multi",opts:["Awareness","Transfer","Ability","Adaptability","Desire","Promote","Transition"],correct:[0,1,2,4,5]},
+  {q:"What are some methodologies that can be used for Agile project management?",type:"multi",opts:["BDD","Kanban","Waterfall","TDD","Crystal methodologies","Non-iterative methodologies","DAD"],correct:[0,1,3,4,6]},
+  {q:"What are the four Scrum inspect and adapt events?",type:"multi",opts:["Sprint Retrospective","Daily Feedback","Daily Scrum","Sprint Closure","Sprint Review","Sprint Planning"],correct:[0,2,4,5]},
+  {q:"What are the five Agile project management model phases?",type:"multi",opts:["Speculating","Envisioning","Adapting","Engaging","Prioritizing","Exploring","Closing"],correct:[0,1,2,5,6]},
+  {q:"Which are some of the recommended components of a business case?",type:"multi",opts:["Outsourcing Partners","Milestones","Investment","Project requirements","Expected payback"],correct:[1,2,4]},
+  // ---- INTEGRATION MANAGEMENT ----
+  {q:"How does project integration management contribute to coordinating project activities?",type:"multi",opts:["Selective quality assurance","Coordinating processes","Removing objectives","Managing stakeholders","Managing resources"],correct:[1,3,4]},
+  {q:"What are key guidelines for integrated change control?",type:"multi",opts:["Method for identifying","Team autonomy","Executive approval","Review/assess/approve","Address promptly","Only approved"],correct:[0,3,4,5]},
+  {q:"What deliverables result when a change request is accepted (budget increase)?",type:"multi",opts:["Status/log updated","Approved","Rejected","Forecasts unchanged","Cost baseline updated"],correct:[0,1,4]},
+  {q:"What are methods and tools for monitoring and controlling?",type:"multi",opts:["Dept sessions","Expert judgment","Decision making","Data analysis","Meetings","Org restructuring"],correct:[1,2,3,4]},
+  {q:"What are three methods and tools for directing and managing project work?",type:"multi",opts:["Meetings","Expert judgment","Risk assessments","Employee surveys","PM systems"],correct:[0,1,4]},
+  {q:"How are baselines updated?",type:"multi",opts:["Increase if under","No adjustments needed","One affects others","Changes cause adjustments","Increase or decrease"],correct:[2,3,4]},
+  {q:"How do the project charter and plan connect?",type:"single",opts:["Plan creates charter","Charter is key input","SOW updated","Charter details form basis"],correct:[1]},
+  {q:"What are closing activities?",type:"multi",opts:["Confirm acceptance","New plans","Media reviews","Analyze audits","Gather/archive"],correct:[0,3,4]},
+  {q:"What categories are in a project management plan?",type:"multi",opts:["Subsidiary plans","Safety regs","Cost baselines","Personnel files","Development approach"],correct:[0,2,4]},
+  // ---- COMMUNICATING AND ENGAGING ----
+  {q:"Which attributes indicate decision-making is well suited for Agile?",type:"multi",opts:["Allows decisions to be revised as feedback changes","Involves cross-functional teams in decisions","Depends on lengthy approval chains","Promotes timely decisions for iterations","Makes criteria visible to team","Locks decisions early"],correct:[0,1,3,4]},
+  {q:"Which communication channels are aligned with Agile communication?",type:"multi",opts:["Shared boards displaying tasks","Informal real-time conversations","Regular review sessions","Contract-style documents","Infrequent status reports","Daily synchronization meetings"],correct:[0,1,2,5]},
+  {q:"What are strategies for improving team performance?",type:"multi",opts:["Focus on one task at a time","Set high benchmarks","Identify problems after work completed","Quickly identify problems","Recognize individual efforts","Focus on multi-tasking","Ensure team energized"],correct:[0,1,3,4,6]},
+  {q:"What are realistic benefits of Agile games?",type:"multi",opts:["Reveal hidden impediments in teamwork","Ensure mastery without coaching","Provide hands-on practice in time-boxed format","Increase psychological safety","Just icebreakers, no meaningful insight"],correct:[0,2,3]},
+  {q:"What are traits of cohesive Agile teams?",type:"multi",opts:["Consult manager before decisions","Open communication encouraged","Collaboration not priority","Members empowered to decide","Balance collaboration and cooperation"],correct:[1,3,4]},
+  {q:"What are approaches to build stakeholder commitment in Agile?",type:"multi",opts:["Single kickoff meeting only","Rely solely on contracts","Collaborative backlog prioritization","Regular feedback loops (sprint reviews)","Maintain transparency via information radiators","Communicate product vision and value"],correct:[2,3,4,5]},
+  {q:"What is the term for locating team members in the same workspace?",type:"single",opts:["Job share","Colocation","Dispersed team","Virtual team"],correct:[1]},
+  {q:"What is a cardboard mockup showing a product as if on a store shelf called?",type:"single",opts:["Storyboard prototype","Concept brochure","Wireframe mockup","Product vision box"],correct:[3]},
+  {q:"What essential considerations apply when coordinating multiple Agile teams?",type:"multi",opts:["Electronic documentation requirements","Median team age","Geographic distribution","Organizational leadership team","Team size","Organizational distribution","Compliance requirements"],correct:[0,2,4,5,6]},
+  {q:"Match developmental models: which describes the Tuckman model?",type:"single",opts:["Four binary qualities (recollection, recognition, decision, awareness)","Four stages (forming, storming, norming, performing)","Three stages (imitate, understand, innovate)","Five levels of expertise"],correct:[1]},
+  // ---- RESOURCE MANAGEMENT ----
+  {q:"Which tools and techniques can you use when developing a resource management plan?",type:"multi",opts:["Expert judgment","Data representation","Analytical techniques","Meetings","Organizational structures","Organizational theory"],correct:[0,1,3,5]},
+  {q:"What are the purposes of estimating activity resources?",type:"multi",opts:["To determine the people, materials, equipment, and facilities required to complete a project","To sequence project activities","To gather information needed to create a realistic schedule and budget","To create the final project schedule"],correct:[0,2]},
+  {q:"What are the project resource management responsibilities of the project manager?",type:"multi",opts:["Complete work assigned to human resources where necessary","Oversee the project team","Obtain equipment and infrastructure needed for the project","Provide leadership and project management throughout the phases of a project","Develop the organization's hiring and firing guidelines","Manage physical resources for the project"],correct:[1,2,3,5]},
+  {q:"Which tools and techniques can you use to estimate activity resources?",type:"multi",opts:["The lessons learned register","Data analysis","Bottom-up estimating","Meetings","A project management information system, or PMIS","Expert judgment","Analogous estimating","Parametric estimating","The scope baseline"],correct:[1,2,3,4,5,6,7]},
+  {q:"Which tools and techniques are typically used to control project resources?",type:"multi",opts:["The ability to influence the resolution of resource issues","Project management information systems that automate scheduling tasks","A cost-benefit analysis to decide the most cost-effective way to resolve the overuse of resources","Organizational process assets","Defining and solving resource problems","The project management plan"],correct:[0,1,2,4]},
+  {q:"You use a three-level RBS for a newsletter project. Which statements about the RBS are correct?",type:"multi",opts:["Level two could contain a node titled 'Annual newsletter'","Level three could contain nodes titled 'Address labels,' 'Envelopes,' and 'Postage stamps'","Level one could be titled 'Annual newsletter'","Level one could contain nodes titled 'Hire graphic designer' and 'Pick up newsletter from printer'"],correct:[1,2]},
+  // ---- STAKEHOLDER ENGAGEMENT ----
+  {q:"Which tools and techniques are used to monitor stakeholder engagement?",type:"multi",opts:["Work performance information","Stakeholder analysis","Multicriteria decision analysis","Feedback","Stakeholder engagement assessment matrix","Meetings","Leadership","Stakeholder register"],correct:[1,2,3,4,5,6]},
+  {q:"What are actions for effectively managing stakeholder expectations?",type:"multi",opts:["Checking in with stakeholders frequently","Addressing concerns and fixing problems immediately","Ensuring expectations are realistic and achievable","Providing regular reports on deliverables, changes, and the fulfillment of strategic objectives","Identifying stakeholder expectations","Comparing the final project results with stakeholder expectations","Analyzing market trends for similar products"],correct:[0,1,2,3,4]},
+  {q:"What are effective methods for collecting feedback when managing stakeholder engagement?",type:"multi",opts:["Negotiating with stakeholders","Having formal or informal conversations","Scheduling group or one-on-one meetings","Sending surveys","Facilitating discussions to identify and resolve issues","Requesting changes","Discussions on project progress"],correct:[1,2,3,4,6]},
+  {q:"Which project team members are stakeholders in a marketing company advertising campaign project?",type:"multi",opts:["The board of directors of the company you work for","The owner of a video production company who sends a portfolio hoping to win work","The art director for your company who creates the ads","One of your marketing company's top customers","The head of HR who will provide a list of qualified employees"],correct:[0,2,4]},
+  {q:"You're managing a project to develop a new software product. Who are the stakeholders?",type:"multi",opts:["The software company's projected customer base for the new product","The CEO of the software company, who offers support to the project from the executive level","A colleague managing a similar project with another customer","The software company's external funding partner for the project","The product manager at the software company"],correct:[1,3,4]},
+  {q:"Which tools and techniques can you use to monitor stakeholder engagement (with alternatives analysis)?",type:"multi",opts:["Change requests","Alternatives analysis","Active listening","Meetings","Conflict management","Voting","Feedback","Stakeholder engagement assessment matrix"],correct:[1,2,3,5,6,7]},
+  {q:"What are effective actions for managing stakeholder expectations to ensure satisfaction?",type:"multi",opts:["Defining the expectations without stakeholder feedback","Identifying stakeholder expectations","Performing regular financial audits","Addressing concerns and fixing problems","Ensuring expectations are realistic and achievable","Checking in with stakeholders often","Providing regular reports on deliverables, changes, and the fulfillment of strategic objectives"],correct:[1,3,4,5,6]},
+  {q:"Which methods are used to collect feedback when managing stakeholder engagement?",type:"multi",opts:["Meetings","Conflict management","Identifying and discussing issues","Conversations","Progress reports","Surveys","Root cause analysis"],correct:[0,2,3,4,5]},
+  // ---- ASSESSING BUSINESS ENVIRONMENT ----
+  {q:"What features of Agile projects help adapt to change?",type:"multi",opts:["Repeating cycles of planning, execution, and delivery every few weeks","PO can influence the team to add features or stories any time during execution","Reassessment of product backlog priorities","Features that can be developed independently","Early detection of defects and issues","Daily acceptance of new user stories","Frequent customer engagement"],correct:[0,2,3,4,6]},
+  {q:"What are typical characteristics of a product backlog?",type:"multi",opts:["The product owner decides the priority","Features can be added at any level based on priority","It includes bug fixes","It's a single, prioritized list of work required to be done","Changes in the backlog are not allowed","The Scrum Master decides the priority"],correct:[0,1,2,3]},
+  {q:"What details should be included in a change request form?",type:"multi",opts:["Triple constraints impacted","Scope baseline","Reason for change","Ishikawa diagram","Change description and priority of request","Risks","Details of resources needed and dependencies"],correct:[0,2,4,5,6]},
+  {q:"What origins commonly generate change requests in projects?",type:"multi",opts:["Project team requests","Changing project needs","Business plan","Organizational changes","Customer requests","New rules and regulations","Project management plan"],correct:[0,1,3,4,5]},
+  {q:"What categories are applied to recognize various types of risks?",type:"multi",opts:["MONTE-CARLO","VUCA","PESTLE","DOPE","TECOP"],correct:[1,2,4]},
+  {q:"Which steps help in integrated change control?",type:"multi",opts:["Review","Decision tree analysis","Identify impact","Approve","Manage"],correct:[0,3,4]},
+  {q:"What situations can result in rejecting a proposed change?",type:"multi",opts:["Impact on other project initiatives is not acceptable","Alternatives are available and are better","Sponsor approval is available","Sponsor or customer does not approve the change","Change control board has approved the change","Change request is incomplete"],correct:[0,1,3,5]},
+  {q:"What has an impact on a project's internal environment and decision-making culture?",type:"multi",opts:["Level of respect and authority","Vision and mission statements","Principles that it aims to achieve","Shared beliefs and practices","Regulations","Budgets","Set of implied rules and standards"],correct:[0,1,2,3,6]},
+  {q:"Organizational and environmental changes may require re-evaluating the business case. What factors should the team examine?",type:"multi",opts:["New strategic goals of the organization","Feasibility","Cost-benefit analysis","Change in leadership","Justification","Value"],correct:[1,2,4,5]},
+  {q:"Which statements are true of the change control board?",type:"multi",opts:["It records and communicates decisions on change requests","It reviews and evaluates change requests","It provides justification for changes","It is made up of experts and stakeholders","It is responsible for creating change requests","It's tasked with approving, delaying, or rejecting change requests"],correct:[0,1,3,5]},
+  {q:"What principles and traits define strong change control practices?",type:"multi",opts:["It is initiated by a change request","Developing a method to identify changes is important","The project manager's job is done when a change request is approved","A formal change request is not needed for every change","Changes can be made to project deliverables, plans, and processes","Small changes can impact project objectives"],correct:[0,1,4,5]},
+  // ---- PMP EXAM PRACTICE (Oliver Lehmann style) ----
+  {q:"During project execution, conflicts arise on both technical and interpersonal levels. What is an appropriate way of handling conflicts?",type:"single",opts:["Conflicts distract the team and disrupt the work rhythm. You should always smooth them when they surface.","A conflict should be handled in a meeting so that the entire team can participate in finding a solution.","Conflicts should be addressed early and usually in private, using a direct, collaborative approach.","You should use your coercive power to quickly resolve conflicts and then focus on goal achievement."],correct:[2]},
+  {q:"What is the purpose of a project charter?",type:"single",opts:["To formally authorize a project or a phase and document initial requirements which satisfy the stakeholder's needs and expectations.","To document how the project will be planned, executed, monitored/controlled, and closed.","To link the project to the ongoing work of the organization.","To describe the process of performing the work defined in the project management plan."],correct:[0]},
+  {q:"Which is a central objective of using a Kanban board?",type:"single",opts:["Allowing for three-point estimation of work items","Limiting the number of items in the Work in Progress column","Allowing for Fibonacci numbers in estimation of epics","Giving the Scrum Master a tool to add stories to the backlog"],correct:[1]},
+  {q:"What does the term continuous delivery often refer to?",type:"single",opts:["A standardized set of deliverables, like plans, reports, and checklists.","A set of tools and techniques that a project manager should master.","Increasing customer satisfaction by delivering valuable products and increments early.","A specific sequence of work, described in terms of soft logic."],correct:[2]},
+  {q:"The communications management plan is a document which includes descriptions of:",type:"single",opts:["Project level performance reports","Activity level status reports","Stakeholder communication requirements","Project benefit analysis results"],correct:[2]},
+  {q:"Which of the following are generally regarded as elements of active listening?",type:"multi",opts:["Making eye contact","Pressurizing the speaker","Paraphrasing","Interpreting the information","Interrupting when appropriate"],correct:[0,2,3]},
+  {q:"According to Bruce Tuckman, what are the stages of team development?",type:"single",opts:["Honeymoon, rejection, regression, acceptance, re-entry","Forming, storming, norming, performing (adjourning)","Tell, sell, consult, join","Direct, support, coach, delegate"],correct:[1]},
+  {q:"What is not a reason for companies to organize lessons learned?",type:"single",opts:["Lessons learned databases are an essential element of the organizational process assets.","Lessons learned should focus on identifying those accountable for errors and failures.","Lessons learned sessions should bring about recommendations to improve future performance.","Phase-end lessons learned sessions provide a good team building exercise."],correct:[1]},
+  {q:"A WBS dictionary is a document which:",type:"single",opts:["describes technical terms used for scope management.","describes the details for each component in the WBS.","translates essential WBS terms for global project teams.","helps translate functional into technical requirements."],correct:[1]},
+  {q:"You found it might be time-consuming to ensure sellers get a clear understanding of the procurement process. Which technique may help save time?",type:"single",opts:["Bidder conferences","Advertising","Qualified sellers list","Four-eyes meetings"],correct:[0]},
+  {q:"What is the meaning of the acronym CSOW?",type:"single",opts:["A statement of work that is part of a contingency plan.","A statement of work that has been formally agreed upon by both parties and is therefore part of a contract.","A statement of work that is currently valid.","A statement of work on project level that cumulates statements of work on cost account level."],correct:[1]},
+  {q:"Crashing describes a technique to speed up a project by:",type:"single",opts:["reallocating existing resources or assigning additional resources to the project.","overlapping activities which were originally planned to be done in sequence.","reducing the number of features of the product in order to reduce development work.","reducing the duration estimates for activities to increase pressure."],correct:[0]},
+  {q:"Planning contingency reserves is part of which risk response strategy?",type:"single",opts:["Active risk mitigation","Passive risk avoidance","Passive risk acceptance","Active risk acceptance"],correct:[3]},
+  {q:"Which concept of locating team members can help them best enhance their performance as a team?",type:"single",opts:["Colocation","Cross-functional dispersion","Virtual e-teams","Global team dispersion"],correct:[0]},
+  {q:"What are the cost types in modern quality management?",type:"single",opts:["Costs of good quality – costs of bad quality","Planning costs – assurance costs – control costs","Planning costs – doing costs – checking costs – acting costs","Prevention costs – appraisal costs – failure costs"],correct:[3]},
+  {q:"Which is not a point used for three-point estimation?",type:"single",opts:["Optimistic estimate","Most likely estimate","Budget estimate","Pessimistic estimate"],correct:[2]},
+  {q:"The scope baseline includes:",type:"single",opts:["The various management plans of the project","Schedule baseline and cost baseline","Product configuration ID and statement of work","WBS dictionary, WBS, scope statement"],correct:[3]},
+  {q:"A scheduling expert refers to nodes with 'path convergence' (sinks). What is the person referring to?",type:"single",opts:["Nodes in a WBS, where several branches are brought back together.","Nodes in a conditional network diagram, at which it becomes deterministic.","Nodes in a decision tree, showing various branches with the same chance.","Nodes in a network logic diagram which have multiple predecessors."],correct:[3]},
+];
+
+// ===== STATE =====
+var QUIZ_AMOUNTS = [10, 20, 30, 40];
+var ACCESS_CODE = "studytime";
+var LS = { access: "davidQuizAccess", history: "davidQuizHistory", flagged: "davidQuizFlagged", mistakes: "davidQuizMistakes", inProgress: "davidQuizInProgress", seen: "davidQuizSeen", streak: "davidQuizStreak", theme: "davidQuizTheme", explain: "davidQuizExplain" };
+
+var selectedAmount = null;
+var currentQuiz = [];
+var currentIndex = 0;
+var userAnswers = [];
+var reviewFilter = "all";
+var quizHistory = [];
+var flagged = [];           // array of question texts
+var mistakePool = [];       // array of question texts ever answered incorrectly
+var seenPool = [];          // question texts served in current no-repeat cycle
+var explainCache = {};      // question text -> explanation string
+var lastResult = null;      // {pct, correct, total, amount}
+var quizLoading = false;
+var resumable = true;       // whether current quiz should be saved for resume (false for pool quizzes? keep true)
+var revealTimers = [];
+var reduceMotion = false;
+try { reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+// ===== SAFE STORAGE =====
+function lsGet(key, fallback) {
+  try { var v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); }
+  catch (e) { return fallback; }
+}
+function lsSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+function lsDel(key) { try { localStorage.removeItem(key); } catch (e) {} }
+
+// ===== UTILITIES =====
+function getBankSize() { return Array.isArray(ALL_QUESTIONS) ? ALL_QUESTIONS.length : 0; }
+function byId(id) { return document.getElementById(id); }
+function shuffleCopy(arr) {
+  var c = arr.slice();
+  for (var i = c.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = c[i]; c[i] = c[j]; c[j] = t; }
+  return c;
+}
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  var el = byId(id); if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showInfo(msg) {
+  var box = byId('info-msg'); if (!box) return;
+  if (msg) { box.textContent = msg; box.classList.add('show'); }
+  else { box.textContent = ''; box.classList.remove('show'); }
+}
+function letter(i) { return String.fromCharCode(65 + i); }
+function sameSet(a, b) {
+  if (a.length !== b.length) return false;
+  var sa = a.slice().sort(function (x, y) { return x - y; });
+  var sb = b.slice().sort(function (x, y) { return x - y; });
+  for (var i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return false;
+  return true;
+}
+
+// ===== LOGIN =====
+function isLoggedIn() { return lsGet(LS.access, false) === true; }
+function attemptLogin() {
+  var input = byId('code-input');
+  var err = byId('login-error');
+  var card = byId('login-card');
+  var val = (input.value || '').trim().toLowerCase();
+  if (val === ACCESS_CODE) {
+    err.textContent = '';
+    lsSet(LS.access, true);
+    card.classList.add('bye');
+    var delay = reduceMotion ? 0 : 480;
+    setTimeout(function () { card.classList.remove('bye'); enterDashboard(); }, delay);
+  } else {
+    err.textContent = 'That code is not quite right. Try again 🥸';
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+    input.value = '';
+    input.focus();
+  }
+}
+function logOut() {
+  lsDel(LS.access);
+  selectedAmount = null;
+  showScreen('screen-login');
+  var input = byId('code-input'); if (input) { input.value = ''; input.type = 'password'; }
+  var err = byId('login-error'); if (err) err.textContent = '';
+}
+function enterDashboard() { loadData(); resetSelection(); renderDashboard(); showScreen('screen-dashboard'); }
+function resetSelection() {
+  selectedAmount = null;
+  var cards = document.querySelectorAll('.quiz-card');
+  for (var i = 0; i < cards.length; i++) { cards[i].classList.remove('selected'); cards[i].setAttribute('aria-pressed', 'false'); }
+  var sb = byId('btn-start'); if (sb) sb.disabled = true;
+  showInfo('');
+}
+
+// ===== DASHBOARD =====
+function loadData() {
+  quizHistory = lsGet(LS.history, []) || [];
+  flagged = lsGet(LS.flagged, []) || [];
+  mistakePool = lsGet(LS.mistakes, []) || [];
+  seenPool = lsGet(LS.seen, []) || [];
+  explainCache = lsGet(LS.explain, {}) || {};
+}
+function buildCards() {
+  var wrap = byId('quiz-cards'); wrap.innerHTML = '';
+  QUIZ_AMOUNTS.forEach(function (amt) {
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'quiz-card';
+    card.setAttribute('data-amount', String(amt));
+    card.setAttribute('aria-label', amt + ' questions');
+    card.innerHTML = '<div class="num">' + amt + '</div><div class="lbl">Questions</div><div class="check" aria-hidden="true">\u2713</div>';
+    card.addEventListener('click', function () { selectAmount(amt); });
+    wrap.appendChild(card);
+  });
+}
+function selectAmount(amount) {
+  var amt = Number(amount);
+  if (!isFinite(amt) || amt <= 0) return;
+  selectedAmount = amt;
+  var cards = document.querySelectorAll('.quiz-card');
+  for (var i = 0; i < cards.length; i++) {
+    var a = Number(cards[i].getAttribute('data-amount'));
+    if (a === amt) { cards[i].classList.add('selected'); cards[i].setAttribute('aria-pressed', 'true'); }
+    else { cards[i].classList.remove('selected'); cards[i].setAttribute('aria-pressed', 'false'); }
+  }
+  byId('btn-start').disabled = false;
+  var bank = getBankSize();
+  if (amt > bank) showInfo('There are currently ' + bank + ' unique questions available. This quiz will use all ' + bank + ' questions.');
+  else showInfo('');
+}
+function renderDashboard() {
+  var bank = getBankSize();
+  byId('total-count-badge').textContent = bank + ' questions ready';
+  byId('btn-start').disabled = (selectedAmount === null);
+  renderStreak();
+  renderResumeBanner();
+  renderHistory();
+}
+function renderHistory() {
+  var stats = byId('history-stats');
+  var wrap = byId('history-table-wrap');
+  if (!quizHistory.length) {
+    stats.innerHTML = '';
+    wrap.innerHTML = '<div class="no-history">No quizzes completed yet. Start your first quiz above.</div>';
+    return;
+  }
+  var best = 0, sum = 0;
+  quizHistory.forEach(function (h) { if (h.pct > best) best = h.pct; sum += h.pct; });
+  var avg = Math.round(sum / quizHistory.length);
+  stats.innerHTML =
+    statCard(quizHistory.length, 'Quizzes') +
+    statCard(best + '%', 'Best Score') +
+    statCard(avg + '%', 'Average') +
+    statCard((flagged.length || 0), 'Flagged');
+  var rows = '';
+  for (var i = quizHistory.length - 1; i >= 0; i--) {
+    var h = quizHistory[i];
+    rows += '<tr><td>' + h.date + '</td><td>' + h.correct + '/' + h.total + '</td><td><strong>' + h.pct + '%</strong> ' +
+      (h.isBest ? '<span class="pb-badge" title="Personal best">🔥</span>' : '') + '</td></tr>';
+  }
+  wrap.innerHTML = '<table><thead><tr><th>Date</th><th>Score</th><th>Result</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+function statCard(v, k) { return '<div class="stat-card"><div class="sv">' + v + '</div><div class="sk">' + k + '</div></div>'; }
+
+// ===== RESUME =====
+function saveProgress() {
+  lsSet(LS.inProgress, { quiz: currentQuiz, index: currentIndex, answers: userAnswers, savedAt: Date.now() });
+}
+function clearProgress() { lsDel(LS.inProgress); }
+function getProgress() {
+  var p = lsGet(LS.inProgress, null);
+  if (!p || !p.quiz || !p.quiz.length) return null;
+  if (p.index >= p.quiz.length) return null;
+  return p;
+}
+function renderResumeBanner() {
+  var banner = byId('resume-banner');
+  if (!banner) return;
+  var p = getProgress();
+  if (!p) { banner.style.display = 'none'; banner.innerHTML = ''; return; }
+  var answered = (p.answers || []).filter(function (a) { return a && a.length; }).length;
+  banner.style.display = 'flex';
+  banner.innerHTML =
+    '<div class="rb-text">You have a quiz in progress<span>Question ' + (p.index + 1) + ' of ' + p.quiz.length + ' \u00b7 ' + answered + ' answered</span></div>' +
+    '<div class="rb-actions"><button class="btn-resume" id="btn-resume" type="button">Resume quiz</button><button class="btn-discard" id="btn-discard" type="button">Discard</button></div>';
+  byId('btn-resume').addEventListener('click', resumeQuiz);
+  byId('btn-discard').addEventListener('click', function () {
+    showConfirm({ title: 'Discard this quiz?', msg: 'Your saved progress will be cleared.', okText: 'Discard', cancelText: 'Keep it', onConfirm: function () { clearProgress(); renderResumeBanner(); } });
+  });
+}
+function resumeQuiz() {
+  var p = getProgress();
+  if (!p) { renderResumeBanner(); return; }
+  currentQuiz = p.quiz;
+  currentIndex = p.index;
+  userAnswers = p.answers || [];
+  for (var i = 0; i < currentQuiz.length; i++) if (!userAnswers[i]) userAnswers[i] = [];
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+// ===== STREAK =====
+function dateKey(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function updateStreak() {
+  var s = lsGet(LS.streak, { current: 0, longest: 0, lastDate: null }) || { current: 0, longest: 0, lastDate: null };
+  var today = dateKey();
+  var y = new Date(); y.setDate(y.getDate() - 1); var yesterday = dateKey(y);
+  if (s.lastDate === today) { /* already counted today */ }
+  else if (s.lastDate === yesterday) { s.current = (s.current || 0) + 1; }
+  else { s.current = 1; }
+  s.lastDate = today;
+  s.longest = Math.max(s.longest || 0, s.current);
+  lsSet(LS.streak, s);
+  return s;
+}
+function renderStreak() {
+  var chip = byId('streak-chip');
+  if (!chip) return;
+  var s = lsGet(LS.streak, null);
+  if (!s || !s.current) { chip.style.display = 'none'; return; }
+  chip.style.display = 'inline-block';
+  chip.textContent = '🔥 ' + s.current + '-day streak' + (s.longest > s.current ? ' \u00b7 best ' + s.longest : '');
+}
+
+// ===== THEME =====
+function applyTheme(dark) {
+  document.body.classList.toggle('dark', !!dark);
+  var t = byId('theme-toggle');
+  if (t) { t.textContent = dark ? '\u2600\ufe0f' : '🌙'; t.setAttribute('aria-pressed', dark ? 'true' : 'false'); t.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode'); }
+}
+function toggleTheme() {
+  var dark = !document.body.classList.contains('dark');
+  applyTheme(dark);
+  lsSet(LS.theme, dark ? 'dark' : 'light');
+}
+
+// ===== START QUIZ + CONFETTI =====
+function startQuiz() {
+  if (quizLoading) return;
+  if (selectedAmount === null) { showInfo('Please tap a question amount above to begin.'); return; }
+  if (!getBankSize()) { showInfo('The question bank is unavailable. Please refresh and try again.'); return; }
+  quizLoading = true;
+  var btn = byId('btn-start');
+  btn.disabled = true;
+  var original = btn.textContent;
+  btn.textContent = 'Quiz locked in. Let\u2019s go 🥸';
+
+  var finish = function () {
+    buildQuizFromBank(selectedAmount);
+    btn.textContent = original;
+    btn.disabled = false;
+    quizLoading = false;
+  };
+
+  if (reduceMotion) {
+    setTimeout(finish, 250);
+  } else {
+    fireConfetti(900);
+    setTimeout(finish, 1000);
+  }
+}
+function buildQuizFromBank(count) {
+  var bank = getBankSize();
+  var n = Math.min(Number(count), bank);
+  currentQuiz = drawWithoutRepeat(n);
+  beginQuiz();
+}
+// Serve questions the user has not seen this cycle; reset cycle once all are exhausted.
+function drawWithoutRepeat(n) {
+  var seenSet = {}; seenPool.forEach(function (t) { seenSet[t] = true; });
+  var unseen = ALL_QUESTIONS.filter(function (q) { return !seenSet[q.q]; });
+  var selected;
+  if (unseen.length >= n) {
+    selected = shuffleCopy(unseen).slice(0, n);
+    selected.forEach(function (q) { seenPool.push(q.q); });
+  } else {
+    // take all remaining unseen, then start a fresh cycle for the rest
+    selected = shuffleCopy(unseen);
+    var pickedTexts = {}; selected.forEach(function (q) { pickedTexts[q.q] = true; });
+    var remaining = n - selected.length;
+    var rest = shuffleCopy(ALL_QUESTIONS).filter(function (q) { return !pickedTexts[q.q]; }).slice(0, remaining);
+    selected = selected.concat(rest);
+    // new cycle begins with whatever we served after the reset
+    seenPool = rest.map(function (q) { return q.q; });
+  }
+  lsSet(LS.seen, seenPool);
+  return selected;
+}
+function buildQuizFromPool(pool, desired, labelMsg) {
+  // pool = array of question objects; pad with random if too few
+  var unique = pool.slice();
+  var want = Math.min(desired, getBankSize());
+  if (unique.length < want) {
+    var have = {};
+    unique.forEach(function (q) { have[q.q] = true; });
+    var extras = shuffleCopy(ALL_QUESTIONS).filter(function (q) { return !have[q.q]; });
+    unique = unique.concat(extras.slice(0, want - unique.length));
+  }
+  currentQuiz = shuffleCopy(unique).slice(0, Math.max(1, Math.min(want, unique.length)));
+  if (labelMsg) { /* shown on dashboard if needed */ }
+  beginQuiz();
+}
+function questionsByText(texts) {
+  var set = {}; texts.forEach(function (t) { set[t] = true; });
+  return ALL_QUESTIONS.filter(function (q) { return set[q.q]; });
+}
+function beginQuiz() {
+  currentIndex = 0;
+  userAnswers = [];
+  for (var i = 0; i < currentQuiz.length; i++) userAnswers.push([]);
+  saveProgress();
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+// ===== QUIZ RENDER =====
+function renderQuestion() {
+  var q = currentQuiz[currentIndex];
+  if (!q) { finishQuiz(); return; }
+  byId('progress-label').textContent = 'Question ' + (currentIndex + 1) + ' of ' + currentQuiz.length;
+  byId('progress-bar').style.width = (currentIndex / currentQuiz.length * 100) + '%';
+  byId('q-text').textContent = q.q;
+
+  var isMulti = q.type === 'multi';
+  var instr = byId('q-instruction');
+  instr.textContent = isMulti ? 'Choose every correct option.' : 'Choose the single best answer.';
+  byId('select-all-note').style.display = isMulti ? 'block' : 'none';
+
+  var list = byId('answer-list');
+  list.innerHTML = '';
+  var sel = userAnswers[currentIndex] || [];
+  q.opts.forEach(function (opt, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'answer-opt' + (sel.indexOf(i) !== -1 ? ' selected' : '');
+    b.setAttribute('data-i', String(i));
+    b.setAttribute('role', isMulti ? 'checkbox' : 'radio');
+    b.setAttribute('aria-checked', sel.indexOf(i) !== -1 ? 'true' : 'false');
+    b.innerHTML = '<span class="opt-letter" aria-hidden="true">' + letter(i) + '</span><span class="opt-text">' + escapeHtml(opt) + '</span>';
+    b.addEventListener('click', function () { toggleAnswer(i, isMulti); });
+    list.appendChild(b);
+  });
+
+  var nextBtn = byId('btn-next');
+  nextBtn.textContent = (currentIndex === currentQuiz.length - 1) ? 'See My Results' : 'Next Question';
+  updateNextState();
+}
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function toggleAnswer(i, isMulti) {
+  var sel = userAnswers[currentIndex];
+  if (isMulti) {
+    var pos = sel.indexOf(i);
+    if (pos === -1) sel.push(i); else sel.splice(pos, 1);
+  } else {
+    userAnswers[currentIndex] = (sel.length === 1 && sel[0] === i) ? [] : [i];
+  }
+  var opts = document.querySelectorAll('#answer-list .answer-opt');
+  var nowSel = userAnswers[currentIndex];
+  for (var k = 0; k < opts.length; k++) {
+    var idx = Number(opts[k].getAttribute('data-i'));
+    var on = nowSel.indexOf(idx) !== -1;
+    opts[k].classList.toggle('selected', on);
+    opts[k].setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+  updateNextState();
+  saveProgress();
+}
+function updateNextState() {
+  var has = (userAnswers[currentIndex] || []).length > 0;
+  byId('btn-next').disabled = !has;
+  byId('next-bar').classList.toggle('show', has);
+}
+function nextQuestion() {
+  if ((userAnswers[currentIndex] || []).length === 0) return;
+  byId('next-bar').classList.remove('show');
+  if (currentIndex < currentQuiz.length - 1) { currentIndex++; saveProgress(); renderQuestion(); }
+  else { byId('progress-bar').style.width = '100%'; finishQuiz(); }
+}
+function endQuizEarly() {
+  showConfirm({
+    title: 'End this quiz?',
+    msg: 'Your progress on this quiz will not be saved.',
+    okText: 'End quiz',
+    cancelText: 'Keep going',
+    onConfirm: function () {
+      clearRevealTimers();
+      clearProgress();
+      byId('next-bar').classList.remove('show');
+      enterDashboard();
+    }
+  });
+}
+
+// ===== SCORING =====
+function gradeQuiz() {
+  var correct = 0, wrongTexts = [];
+  for (var i = 0; i < currentQuiz.length; i++) {
+    var q = currentQuiz[i];
+    var ok = sameSet(userAnswers[i] || [], q.correct);
+    if (ok) correct++; else wrongTexts.push(q.q);
+  }
+  var total = currentQuiz.length;
+  var pct = total ? Math.round(correct / total * 100) : 0;
+  return { correct: correct, total: total, pct: pct, wrongTexts: wrongTexts };
+}
+
+// ===== REVEAL SEQUENCE =====
+function clearRevealTimers() { revealTimers.forEach(function (t) { clearTimeout(t); }); revealTimers = []; }
+function finishQuiz() {
+  var graded = gradeQuiz();
+  lastResult = graded;
+  clearProgress();
+  recordMistakes(graded.wrongTexts);
+  graded.streak = updateStreak();
+  var isFirst = quizHistory.length === 0;
+  var prevBest = quizHistory.reduce(function (m, h) { return Math.max(m, h.pct); }, 0);
+  var prevPct = isFirst ? null : quizHistory[quizHistory.length - 1].pct;
+
+  var isNewBest = !isFirst && graded.pct > prevBest;
+  var matched = !isFirst && !isNewBest && graded.pct === prevBest;
+
+  var entry = { date: shortDate(), correct: graded.correct, total: graded.total, pct: graded.pct, isBest: isFirst || graded.pct > prevBest };
+  quizHistory.push(entry);
+  lsSet(LS.history, quizHistory);
+
+  graded.isFirst = isFirst;
+  graded.prevBest = prevBest;
+  graded.prevPct = prevPct;
+  graded.isNewBest = isNewBest;
+  graded.matched = matched;
+
+  runReveal(graded);
+}
+function shortDate() {
+  var d = new Date();
+  var mm = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate() + ' ' + mm[d.getMonth()];
+}
+function recordMistakes(wrongTexts) {
+  var set = {}; mistakePool.forEach(function (t) { set[t] = true; });
+  wrongTexts.forEach(function (t) { set[t] = true; });
+  mistakePool = Object.keys(set);
+  lsSet(LS.mistakes, mistakePool);
+}
+
+function runReveal(graded) {
+  clearRevealTimers();
+  showScreen('screen-reveal');
+  var msg = byId('reveal-msg');
+  var dots = byId('reveal-dots');
+  dots.style.display = '';
+  byId('skip-reveal').style.display = '';
+
+  if (reduceMotion) { dots.style.display = 'none'; renderResults(graded); return; }
+
+  msg.className = 'reveal-msg fade-enter';
+  msg.textContent = 'Marking your answers...';
+  revealTimers.push(setTimeout(function () {
+    msg.className = 'reveal-msg fade-enter';
+    msg.textContent = 'Calculating your study power...';
+  }, 1000));
+  revealTimers.push(setTimeout(function () {
+    dots.style.display = 'none';
+    renderResults(graded);
+  }, 2000));
+}
+function skipReveal() { if (lastResult) { clearRevealTimers(); renderResults(lastResult); } }
+
+// ===== RESULTS =====
+var CATS = [
+  { min: 90, head: 'Certified Study Weapon 🏆', icon: '🏆', label: 'Mastered',
+    sub: 'You did not come to play. You know this material and your score proves it.',
+    btn: 'Defend the Title', mode: 'same' },
+  { min: 75, head: 'Big Brain Behaviour 🧠', icon: '🧠', label: 'Strong',
+    sub: 'Strong result. You know your stuff, with only a few sneaky gaps left to close.',
+    btn: 'Go for 90%+', mode: 'same' },
+  { min: 60, head: 'You\u2019re Getting Dangerous 😎', icon: '😎', label: 'Building',
+    sub: 'The foundations are there. Review the questions you missed, then come back for the rematch.',
+    btn: 'Run It Back', mode: 'same' },
+  { min: 40, head: 'Plot Twist Incoming 👀', icon: '👀', label: 'Revising',
+    sub: 'Not your final form. Your incorrect answers just gave you the perfect revision list.',
+    btn: 'Review My Gaps', mode: 'gaps', secondary: 'Try Again' },
+  { min: 0, head: 'Academic Comeback Loading 📚', icon: '📚', label: 'Learning',
+    sub: 'Okay, the quiz humbled us. Good. Now we know exactly what to study next.',
+    btn: 'Show Me What to Study', mode: 'gaps', secondary: 'Start the Comeback' }
+];
+function categoryFor(pct) { for (var i = 0; i < CATS.length; i++) if (pct >= CATS[i].min) return CATS[i]; return CATS[CATS.length - 1]; }
+
+function renderResults(graded) {
+  showScreen('screen-results');
+  reviewFilter = 'all';
+  var cat = categoryFor(graded.pct);
+
+  // PB flash
+  var flash = byId('pb-flash');
+  flash.className = 'pb-flash';
+  if (graded.isNewBest) { flash.textContent = 'NEW PERSONAL BEST 🔥'; flash.classList.add('best'); }
+  else if (graded.matched) { flash.textContent = 'You matched your best score 👏'; }
+  else { flash.textContent = ''; }
+
+  // ring + count up
+  var ringWrap = byId('score-ring-wrap');
+  ringWrap.classList.remove('glow', 'enlarge');
+  var ring = byId('ring-fg');
+  var r = 74, circ = 2 * Math.PI * r;
+  ring.style.strokeDasharray = circ;
+  ring.style.strokeDashoffset = circ;
+  byId('res-dynamic-label').textContent = cat.label;
+
+  // icon + headline
+  var iconEl = byId('result-icon');
+  iconEl.textContent = cat.icon;
+  iconEl.className = 'result-icon';
+  byId('res-headline').textContent = cat.head;
+  byId('res-sub').textContent = cat.sub;
+
+  // change line
+  var change = byId('change-line');
+  change.className = 'change-line';
+  if (graded.prevPct == null) { change.textContent = 'First quiz logged. This is your baseline.'; }
+  else if (graded.pct > graded.prevPct) { change.textContent = 'Up ' + (graded.pct - graded.prevPct) + ' percentage points from your last quiz'; change.classList.add('up'); }
+  else if (graded.pct === graded.prevPct) { change.textContent = 'Right on level with your last quiz.'; }
+  else { change.textContent = 'Every attempt is giving you better revision data.'; }
+
+  // animate ring + number
+  animateScore(graded.pct, circ, ring, function () {
+    if (reduceMotion) { afterScore(graded, cat, ringWrap, iconEl); return; }
+    afterScore(graded, cat, ringWrap, iconEl);
+  });
+
+  buildResultsDetail(graded, cat);
+}
+function animateScore(target, circ, ring, done) {
+  var pctEl = byId('res-pct');
+  if (reduceMotion) { pctEl.textContent = target + '%'; ring.style.strokeDashoffset = circ * (1 - target / 100); done && done(); return; }
+  var start = null, dur = 900;
+  function step(ts) {
+    if (start === null) start = ts;
+    var p = Math.min(1, (ts - start) / dur);
+    var eased = 1 - Math.pow(1 - p, 3);
+    var val = Math.round(eased * target);
+    pctEl.textContent = val + '%';
+    ring.style.strokeDashoffset = circ * (1 - (eased * target) / 100);
+    if (p < 1) requestAnimationFrame(step); else { pctEl.textContent = target + '%'; done && done(); }
+  }
+  requestAnimationFrame(step);
+}
+function afterScore(graded, cat, ringWrap, iconEl) {
+  if (reduceMotion) return;
+  iconEl.classList.add('bounce');
+  if (graded.pct >= 90) {
+    ringWrap.classList.add('enlarge');
+    fireConfetti(1100, true);
+  } else if (graded.pct >= 75) {
+    fireConfetti(700);
+  } else if (graded.pct >= 60) {
+    fireConfetti(600, false, ['#FF8400', '#8FA0D8']);
+  }
+  if (graded.isNewBest) {
+    ringWrap.classList.add('glow');
+    fireConfetti(1000, true);
+  }
+}
+
+function buildResultsDetail(graded, cat) {
+  var wrong = graded.total - graded.correct;
+  var html = '';
+  html += '<div class="results-stats reveal-block">';
+  html += rsCard(graded.correct, 'Correct', 'green');
+  html += rsCard(wrong, 'Incorrect', 'red');
+  html += rsCard(graded.total, 'Total', '');
+  html += rsCard(graded.pct + '%', cat.label, '');
+  html += '</div>';
+
+  // mistakes / flagged quiz buttons
+  html += '<div class="quiz-mistakes-row reveal-block">';
+  html += '<button class="btn-quizmore" id="btn-quiz-mistakes" type="button">Quiz Me on My Mistakes</button>';
+  html += '<button class="btn-quizmore" id="btn-quiz-flagged" type="button"' + (flagged.length ? '' : ' disabled') + '>Quiz Me on Flagged Questions</button>';
+  html += '</div>';
+  html += '<div class="hint-line" id="quizmore-hint"></div>';
+
+  // filters
+  html += '<div class="filter-row reveal-block" id="filter-row">';
+  html += filterBtn('all', 'All Questions');
+  html += filterBtn('correct', 'Correct');
+  html += filterBtn('incorrect', 'Incorrect');
+  html += filterBtn('flagged', 'Flagged');
+  html += '</div>';
+
+  html += '<div class="review-list" id="review-list"></div>';
+
+  // action buttons (category-driven)
+  html += '<div class="results-btns reveal-block">';
+  if (cat.mode === 'same') {
+    html += '<button class="btn-action btn-primary span2" id="btn-cat-main" type="button">' + cat.btn + '</button>';
+    html += '<button class="btn-action btn-secondary" id="btn-trynew" type="button">Try New Questions</button>';
+    html += '<button class="btn-action btn-dark" id="btn-home" type="button">Dashboard</button>';
+  } else {
+    html += '<button class="btn-action btn-primary span2" id="btn-cat-main" type="button">' + cat.btn + '</button>';
+    html += '<button class="btn-action btn-secondary" id="btn-cat-second" type="button">' + cat.secondary + '</button>';
+    html += '<button class="btn-action btn-dark" id="btn-home" type="button">Dashboard</button>';
+  }
+  html += '</div>';
+
+  byId('results-detail').innerHTML = html;
+  wireResultButtons(graded, cat);
+  renderReview();
+}
+function rsCard(v, k, cls) { return '<div class="rs-card"><div class="rv ' + (cls || '') + '">' + v + '</div><div class="rl">' + k + '</div></div>'; }
+function filterBtn(f, label) { return '<button class="filter-btn' + (reviewFilter === f ? ' active' : '') + '" data-filter="' + f + '" type="button">' + label + '</button>'; }
+
+function wireResultButtons(graded, cat) {
+  var amount = currentQuiz.length;
+  byId('btn-home').addEventListener('click', function () { enterDashboard(); });
+
+  var main = byId('btn-cat-main');
+  if (cat.mode === 'same') {
+    main.addEventListener('click', function () { buildQuizFromBank(amount); });
+    byId('btn-trynew').addEventListener('click', function () { buildQuizFromBank(amount); });
+  } else {
+    main.addEventListener('click', function () { setFilter('incorrect'); try { byId('filter-row').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); } catch (e) {} });
+    var sec = byId('btn-cat-second');
+    if (cat.secondary === 'Try Again') sec.addEventListener('click', function () { buildQuizFromBank(amount); });
+    else sec.addEventListener('click', function () { startComeback(); }); // Start the Comeback -> 10q focused on mistakes
+  }
+
+  byId('btn-quiz-mistakes').addEventListener('click', function () { quizMistakes(); });
+  var fbtn = byId('btn-quiz-flagged');
+  if (fbtn && !fbtn.disabled) fbtn.addEventListener('click', function () { quizFlagged(); });
+
+  var fr = byId('filter-row');
+  fr.querySelectorAll('.filter-btn').forEach(function (b) {
+    b.addEventListener('click', function () { setFilter(b.getAttribute('data-filter')); });
+  });
+}
+function startComeback() {
+  var pool = questionsByText(mistakePool);
+  var hint = byId('quizmore-hint');
+  if (pool.length < 10 && hint) hint.textContent = 'Only ' + pool.length + ' past mistakes saved, so we topped this up with fresh questions to reach 10.';
+  buildQuizFromPool(pool, 10);
+}
+function quizMistakes() {
+  var pool = questionsByText(mistakePool);
+  var hint = byId('quizmore-hint');
+  if (!pool.length) { if (hint) hint.textContent = 'No saved mistakes yet. Finish a quiz with a few wrong answers and they will appear here.'; return; }
+  if (pool.length < 10 && hint) hint.textContent = 'You have ' + pool.length + ' saved mistakes, so this quiz uses all of them.';
+  buildQuizFromPool(pool, Math.max(pool.length, 10));
+}
+function quizFlagged() {
+  var pool = questionsByText(flagged);
+  var hint = byId('quizmore-hint');
+  if (!pool.length) { if (hint) hint.textContent = 'No flagged questions yet. Tap the bookmark on any question to flag it.'; return; }
+  if (pool.length < 10 && hint) hint.textContent = 'You have ' + pool.length + ' flagged question' + (pool.length === 1 ? '' : 's') + ', so this quiz uses all of them.';
+  buildQuizFromPool(pool, Math.max(pool.length, 10));
+}
+
+function setFilter(f) {
+  reviewFilter = f;
+  var btns = document.querySelectorAll('#filter-row .filter-btn');
+  btns.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-filter') === f); });
+  renderReview();
+}
+function isFlagged(text) { return flagged.indexOf(text) !== -1; }
+function toggleFlag(text) {
+  var i = flagged.indexOf(text);
+  if (i === -1) flagged.push(text); else flagged.splice(i, 1);
+  lsSet(LS.flagged, flagged);
+  var fb = byId('btn-quiz-flagged');
+  if (fb) fb.disabled = (flagged.length === 0);
+  renderReview();
+}
+function renderReview() {
+  var list = byId('review-list');
+  if (!list) return;
+  list.innerHTML = '';
+  var any = false;
+  for (var i = 0; i < currentQuiz.length; i++) {
+    var q = currentQuiz[i];
+    var sel = userAnswers[i] || [];
+    var ok = sameSet(sel, q.correct);
+    var fl = isFlagged(q.q);
+    if (reviewFilter === 'correct' && !ok) continue;
+    if (reviewFilter === 'incorrect' && ok) continue;
+    if (reviewFilter === 'flagged' && !fl) continue;
+    any = true;
+
+    var item = document.createElement('div');
+    item.className = 'review-item';
+    var head = '<div class="review-head"><div class="q-text">' + escapeHtml(q.q) + '</div>' +
+      '<button class="flag-btn' + (fl ? ' on' : '') + '" data-q="' + i + '" type="button" aria-label="' + (fl ? 'Remove flag' : 'Flag for review') + '" aria-pressed="' + (fl ? 'true' : 'false') + '">' + (fl ? '🔖' : '📑') + '</button></div>';
+    var opts = '';
+    q.opts.forEach(function (opt, oi) {
+      var isCorrect = q.correct.indexOf(oi) !== -1;
+      var picked = sel.indexOf(oi) !== -1;
+      var cls = 'neutral', tag = '';
+      if (isCorrect) { cls = 'correct-ans'; tag = '<span class="review-tag tag-' + (picked ? 'correct' : 'answer') + '">' + (picked ? 'Your pick \u2713' : 'Correct answer') + '</span>'; }
+      else if (picked) { cls = 'wrong-ans'; tag = '<span class="review-tag tag-wrong">Your pick \u2717</span>'; }
+      opts += '<div class="review-opt ' + cls + '"><span class="opt-letter" aria-hidden="true">' + letter(oi) + '</span><span class="ro-text">' + escapeHtml(opt) + '</span>' + tag + '</div>';
+    });
+    var cached = explainCache[q.q];
+    var explainHtml = '<button class="btn-explain" data-q="' + i + '" type="button">' + (cached ? 'Show explanation' : 'Explain this answer') + '</button>' +
+      '<div class="explain-box' + (cached ? '' : '') + '" data-box="' + i + '">' + (cached ? '<div class="ex-label">Why</div>' + escapeHtml(cached) : '') + '</div>';
+    item.innerHTML = head + opts + explainHtml;
+    list.appendChild(item);
+  }
+  if (!any) {
+    var empty = document.createElement('div');
+    empty.className = 'no-history';
+    empty.style.background = '#fff';
+    empty.style.borderRadius = '16px';
+    empty.textContent = reviewFilter === 'flagged' ? 'No flagged questions in this quiz yet. Tap a bookmark to flag one.' : 'Nothing to show in this filter.';
+    list.appendChild(empty);
+  }
+  list.querySelectorAll('.flag-btn').forEach(function (b) {
+    b.addEventListener('click', function () { toggleFlag(currentQuiz[Number(b.getAttribute('data-q'))].q); });
+  });
+  list.querySelectorAll('.btn-explain').forEach(function (b) {
+    b.addEventListener('click', function () { explainAnswer(Number(b.getAttribute('data-q')), b); });
+  });
+}
+
+// ===== EXPLANATIONS (on-demand) =====
+function explainAnswer(qIndex, btn) {
+  var q = currentQuiz[qIndex];
+  if (!q) return;
+  var box = document.querySelector('.explain-box[data-box="' + qIndex + '"]');
+  if (!box) return;
+  // toggle if already shown
+  if (box.classList.contains('show') && box.getAttribute('data-loaded') === '1') {
+    box.classList.remove('show'); btn.textContent = 'Show explanation'; return;
+  }
+  if (explainCache[q.q]) {
+    box.innerHTML = '<div class="ex-label">Why</div>' + escapeHtml(explainCache[q.q]);
+    box.classList.add('show'); box.setAttribute('data-loaded', '1'); btn.textContent = 'Hide explanation'; return;
+  }
+  // fetch from model
+  btn.disabled = true; btn.textContent = 'Thinking...';
+  box.innerHTML = '<div class="ex-label">Why</div>Working it out...';
+  box.classList.add('show');
+  var correctLetters = q.correct.map(function (i) { return letter(i); }).join(', ');
+  var optionsText = q.opts.map(function (o, i) { return letter(i) + ') ' + o; }).join('\n');
+  var prompt = 'You are a PMP exam tutor. Explain this practice question clearly and concisely for a student.\n\n' +
+    'Question: ' + q.q + '\n\nOptions:\n' + optionsText + '\n\n' +
+    'The correct answer is: ' + correctLetters + '.\n\n' +
+    'In 2 to 4 short sentences, explain why that answer is correct and, if helpful, why the most tempting wrong option is wrong. Use plain language. Do not restate the full question. Do not use markdown, headings, or bullet points.';
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+  }).then(function (r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function (data) {
+    var text = (data.content || []).filter(function (b) { return b.type === 'text'; }).map(function (b) { return b.text; }).join('\n').trim();
+    if (!text) throw new Error('empty');
+    explainCache[q.q] = text;
+    lsSet(LS.explain, explainCache);
+    box.innerHTML = '<div class="ex-label">Why</div>' + escapeHtml(text);
+    box.setAttribute('data-loaded', '1');
+    btn.disabled = false; btn.textContent = 'Hide explanation';
+  }).catch(function () {
+    box.innerHTML = '<div class="ex-label">Why</div>Live explanations are not available in this environment. They work inside Claude, or once an API key is connected on your site. I can also bake fixed explanations into the file if you prefer.';
+    btn.disabled = false; btn.textContent = 'Explain this answer';
+  });
+}
+
+// ===== CONFETTI =====
+var confettiCtx = null, confettiRAF = null, confettiParticles = [];
+function fireConfetti(duration, big, palette) {
+  if (reduceMotion) return;
+  var canvas = byId('confetti-canvas');
+  if (!canvas) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  var ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  var colors = palette || ['#FF8400', '#8FA0D8', '#F9DFC6', '#0B0829', '#FFFFFF'];
+  var W = window.innerWidth, H = window.innerHeight;
+  var count = big ? 90 : 60;
+  for (var i = 0; i < count; i++) {
+    confettiParticles.push({
+      x: W / 2 + (Math.random() - 0.5) * W * 0.4,
+      y: H * 0.35 + (Math.random() - 0.5) * 60,
+      vx: (Math.random() - 0.5) * 9,
+      vy: Math.random() * -9 - 4,
+      g: 0.28 + Math.random() * 0.12,
+      size: 5 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.3,
+      life: 1
+    });
+  }
+  var end = Date.now() + (duration || 900);
+  if (confettiRAF) return; // already running, particles added to same loop
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    var alive = false;
+    for (var k = 0; k < confettiParticles.length; k++) {
+      var p = confettiParticles[k];
+      p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if (Date.now() > end) p.life -= 0.04;
+      if (p.y < H + 30 && p.life > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      }
+    }
+    if (alive) { confettiRAF = requestAnimationFrame(frame); }
+    else { ctx.clearRect(0, 0, W, H); confettiParticles = []; confettiRAF = null; }
+  }
+  confettiRAF = requestAnimationFrame(frame);
+}
+
+// ===== CLEAR HISTORY =====
+function clearHistory() {
+  showConfirm({
+    title: 'Clear study history?',
+    msg: 'This resets your scores, flagged questions, and saved mistakes. This cannot be undone.',
+    okText: 'Clear history',
+    cancelText: 'Cancel',
+    onConfirm: function () {
+      quizHistory = []; flagged = []; mistakePool = []; seenPool = []; explainCache = {};
+      lsSet(LS.history, quizHistory); lsSet(LS.flagged, flagged); lsSet(LS.mistakes, mistakePool);
+      lsSet(LS.seen, seenPool); lsSet(LS.explain, explainCache);
+      lsDel(LS.streak); lsDel(LS.inProgress);
+      renderStreak(); renderResumeBanner(); renderHistory();
+    }
+  });
+}
+
+// ===== CONFIRM MODAL =====
+function showConfirm(opts) {
+  var overlay = byId('confirm-overlay');
+  if (!overlay) { if (opts.onConfirm) opts.onConfirm(); return; }
+  byId('confirm-title').textContent = opts.title || 'Are you sure?';
+  byId('confirm-msg').textContent = opts.msg || '';
+  var ok = byId('confirm-ok'), cancel = byId('confirm-cancel');
+  ok.textContent = opts.okText || 'Confirm';
+  cancel.textContent = opts.cancelText || 'Cancel';
+  function cleanup() {
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+    ok.removeEventListener('click', onOk);
+    cancel.removeEventListener('click', onCancel);
+    overlay.removeEventListener('click', onBackdrop);
+    document.removeEventListener('keydown', onKey);
+  }
+  function onOk() { cleanup(); if (opts.onConfirm) opts.onConfirm(); }
+  function onCancel() { cleanup(); if (opts.onCancel) opts.onCancel(); }
+  function onBackdrop(e) { if (e.target === overlay) onCancel(); }
+  function onKey(e) { if (e.key === 'Escape') onCancel(); }
+  ok.addEventListener('click', onOk);
+  cancel.addEventListener('click', onCancel);
+  overlay.addEventListener('click', onBackdrop);
+  document.addEventListener('keydown', onKey);
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+  setTimeout(function () { try { ok.focus(); } catch (e) {} }, 50);
+}
+
+// ===== INIT =====
+function init() {
+  // login wiring
+  byId('btn-login').addEventListener('click', attemptLogin);
+  byId('code-input').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); attemptLogin(); } });
+  var toggle = byId('toggle-code');
+  toggle.addEventListener('click', function () {
+    var inp = byId('code-input');
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    toggle.textContent = show ? '🙈' : '👁️';
+    toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+    toggle.setAttribute('aria-label', show ? 'Hide access code' : 'Show access code');
+    inp.focus();
+  });
+  byId('btn-logout').addEventListener('click', logOut);
+
+  // dashboard wiring
+  buildCards();
+  byId('btn-start').addEventListener('click', startQuiz);
+  byId('btn-clear').addEventListener('click', clearHistory);
+  byId('theme-toggle').addEventListener('click', toggleTheme);
+
+  // apply saved theme + load explanation cache early
+  applyTheme(lsGet(LS.theme, 'light') === 'dark');
+  explainCache = lsGet(LS.explain, {}) || {};
+
+  // quiz wiring
+  byId('btn-next').addEventListener('click', nextQuestion);
+  byId('btn-end').addEventListener('click', endQuizEarly);
+
+  // reveal wiring
+  byId('skip-reveal').addEventListener('click', skipReveal);
+
+  // resume session
+  if (isLoggedIn()) { enterDashboard(); }
+  else { showScreen('screen-login'); setTimeout(function () { var i = byId('code-input'); if (i) i.focus(); }, 200); }
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>
