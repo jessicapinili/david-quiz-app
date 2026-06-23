@@ -188,6 +188,33 @@
   }
   .btn-clear:hover { background: var(--oxford); color: var(--amande); }
 
+  /* ===== QUESTIONS TO RE-DO ===== */
+  .redo-section { margin-top: 36px; }
+  .redo-total-badge { font-size: 0.85rem; font-weight: 700; color: var(--orange); }
+  .redo-empty { background: #fff; border-radius: 14px; padding: 22px 18px; text-align: center; opacity: 0.65; font-size: 0.9rem; line-height: 1.5; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .redo-filters { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none; }
+  .redo-filters::-webkit-scrollbar { display: none; }
+  .redo-filter { flex: 0 0 auto; background: #fff; border: 2px solid var(--vista-blue); color: var(--oxford); font-weight: 700; font-size: 0.85rem; padding: 9px 16px; border-radius: 10px; cursor: pointer; min-height: 42px; white-space: nowrap; transition: all .15s; }
+  .redo-filter.active { background: var(--oxford); border-color: var(--oxford); color: var(--amande); }
+  .btn-redo-quiz { width: 100%; background: var(--orange); color: var(--oxford); font-weight: 700; font-size: 1rem; border: none; border-radius: 14px; padding: 15px; min-height: 52px; cursor: pointer; margin-bottom: 16px; transition: transform .12s, background .15s; box-shadow: 0 3px 10px rgba(255,132,0,0.22); }
+  .btn-redo-quiz:active { transform: scale(0.98); }
+  .btn-redo-quiz:hover { background: #e67600; }
+  .btn-redo-quiz:disabled { background: #e2ddd3; color: #a8a39a; cursor: not-allowed; box-shadow: none; }
+  .redo-list { display: flex; flex-direction: column; gap: 10px; }
+  .redo-item { background: #fff; border-radius: 14px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(11,8,41,0.07); }
+  .redo-item-head { display: flex; gap: 10px; align-items: flex-start; }
+  .redo-q { flex: 1; font-weight: 600; font-size: 0.92rem; line-height: 1.45; cursor: pointer; word-break: break-word; }
+  .redo-q::after { content: " ›"; opacity: 0.4; font-weight: 700; }
+  .redo-q.open::after { content: " ⌄"; }
+  .redo-remove { flex: 0 0 auto; width: 36px; height: 36px; border: none; background: var(--amande); border-radius: 9px; cursor: pointer; font-size: 1.1rem; line-height: 1; opacity: 0.55; transition: all .15s; }
+  .redo-remove:hover { opacity: 1; background: var(--red-light); color: var(--red); }
+  .redo-tags { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+  .redo-tag { font-size: 0.68rem; font-weight: 700; padding: 2px 9px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .redo-tag.wrong { background: var(--red); color: #fff; }
+  .redo-tag.flag { background: var(--orange); color: var(--oxford); }
+  .redo-answer { margin-top: 12px; display: none; }
+  .redo-answer.show { display: block; animation: fadeIn .25s ease; }
+
   /* ===== QUIZ ===== */
   #screen-quiz .wrap { padding-bottom: calc(120px + var(--safe-b)); }
   .quiz-top { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 14px; gap: 10px; }
@@ -344,7 +371,7 @@
     .quiz-card { min-height: 120px; padding: 26px 18px; }
     .quiz-card .num { font-size: 2.4rem; }
     .dashboard-header h1 { font-size: 3rem; }
-    .btn-start, .info-msg, .note, .history-section { max-width: 760px; margin-left: auto; margin-right: auto; }
+    .btn-start, .info-msg, .note, .history-section, .redo-section { max-width: 760px; margin-left: auto; margin-right: auto; }
     .history-stats { grid-template-columns: repeat(4, 1fr); }
     #next-bar { position: static; transform: none; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; border: none; pointer-events: auto; margin-top: 18px; }
     #next-bar .inner { max-width: 760px; }
@@ -394,6 +421,11 @@
   body.dark .confirm-overlay { background: rgba(0,0,0,0.65); }
   body.dark .btn-confirm-cancel { background: #1E183C; color: #F4ECE0; border-color: rgba(244,236,224,0.25); }
   body.dark .no-history, body.dark .review-opt.neutral { color: #F4ECE0; }
+  body.dark .redo-empty, body.dark .redo-item { background: #1E183C; color: #F4ECE0; box-shadow: 0 2px 12px rgba(0,0,0,0.45); }
+  body.dark .redo-filter { background: #1E183C; color: #F4ECE0; border-color: #5C6BAA; }
+  body.dark .redo-filter.active { background: #F4ECE0; color: #14102E; border-color: #F4ECE0; }
+  body.dark .redo-remove { background: #241D44; }
+  body.dark .redo-remove:hover { background: rgba(192,57,43,0.25); color: #fff; }
   body.dark .resume-banner .btn-discard { background: rgba(244,236,224,0.15); }
 </style>
 </head>
@@ -442,6 +474,20 @@
     <button class="btn-start" id="btn-start" type="button" disabled>Start Quiz</button>
     <div class="info-msg" id="info-msg"></div>
     <p class="note">Every quiz is randomly generated using only your uploaded study material.</p>
+
+    <div class="redo-section" id="redo-section">
+      <div class="section-label">Questions to Re-do <span class="redo-total-badge" id="redo-total-badge"></span></div>
+      <div class="redo-empty" id="redo-empty">Nothing here yet. Questions you get wrong or flag (with the bookmark) will collect here so you can practise them again.</div>
+      <div id="redo-body" style="display:none">
+        <div class="redo-filters" id="redo-filters">
+          <button class="redo-filter active" data-rf="all" type="button">All</button>
+          <button class="redo-filter" data-rf="wrong" type="button">Got Wrong</button>
+          <button class="redo-filter" data-rf="flagged" type="button">Flagged</button>
+        </div>
+        <button class="btn-redo-quiz" id="btn-redo-quiz" type="button">Quiz me on these</button>
+        <div class="redo-list" id="redo-list"></div>
+      </div>
+    </div>
 
     <div class="history-section">
       <div class="section-label">Study History</div>
@@ -1331,6 +1377,8 @@ var quizHistory = [];
 var flagged = [];           // array of question texts
 var mistakePool = [];       // array of question texts ever answered incorrectly
 var seenPool = [];          // question texts served in current no-repeat cycle
+var redoFilter = "all";     // all | wrong | flagged
+var redoCurrent = [];       // current rendered redo rows
 var lastResult = null;      // {pct, correct, total, amount}
 var quizLoading = false;
 var resumable = true;       // whether current quiz should be saved for resume (false for pool quizzes? keep true)
@@ -1453,6 +1501,7 @@ function renderDashboard() {
   byId('btn-start').disabled = (selectedAmount === null);
   renderStreak();
   renderResumeBanner();
+  renderRedo();
   renderHistory();
 }
 function renderHistory() {
@@ -1553,6 +1602,103 @@ function toggleTheme() {
   lsSet(LS.theme, dark ? 'dark' : 'light');
 }
 
+// ===== QUESTIONS TO RE-DO =====
+function unionTexts() {
+  var set = {}; var order = [];
+  mistakePool.forEach(function (t) { if (!set[t]) { set[t] = true; order.push(t); } });
+  flagged.forEach(function (t) { if (!set[t]) { set[t] = true; order.push(t); } });
+  return order;
+}
+function redoTextsForFilter() {
+  if (redoFilter === 'wrong') return mistakePool.slice();
+  if (redoFilter === 'flagged') return flagged.slice();
+  return unionTexts();
+}
+function renderRedo() {
+  var section = byId('redo-section'); if (!section) return;
+  var wrongN = mistakePool.length, flagN = flagged.length, totalN = unionTexts().length;
+  byId('redo-total-badge').textContent = totalN ? '(' + totalN + ')' : '';
+  var empty = byId('redo-empty'), body = byId('redo-body');
+  if (totalN === 0) { empty.style.display = 'block'; body.style.display = 'none'; return; }
+  empty.style.display = 'none'; body.style.display = 'block';
+
+  // filter labels with counts
+  var filters = byId('redo-filters').querySelectorAll('.redo-filter');
+  filters.forEach(function (b) {
+    var f = b.getAttribute('data-rf');
+    b.textContent = f === 'all' ? 'All (' + totalN + ')' : f === 'wrong' ? 'Got Wrong (' + wrongN + ')' : 'Flagged (' + flagN + ')';
+    b.classList.toggle('active', f === redoFilter);
+  });
+
+  // build current rows
+  var texts = redoTextsForFilter();
+  var byTextQ = {}; questionsByText(texts).forEach(function (q) { byTextQ[q.q] = q; });
+  redoCurrent = [];
+  texts.forEach(function (t) {
+    if (byTextQ[t]) redoCurrent.push({ text: t, q: byTextQ[t], isWrong: mistakePool.indexOf(t) !== -1, isFlagged: flagged.indexOf(t) !== -1 });
+  });
+
+  var quizBtn = byId('btn-redo-quiz');
+  quizBtn.disabled = redoCurrent.length === 0;
+  quizBtn.textContent = redoCurrent.length ? 'Quiz me on these ' + redoCurrent.length : 'Nothing to quiz here';
+
+  var list = byId('redo-list');
+  list.innerHTML = '';
+  if (!redoCurrent.length) {
+    var none = document.createElement('div');
+    none.className = 'redo-empty';
+    none.textContent = redoFilter === 'flagged' ? 'No flagged questions. Tap the bookmark on a question during review to add one.' : 'Nothing in this list right now.';
+    list.appendChild(none);
+    return;
+  }
+  redoCurrent.forEach(function (row, i) {
+    var item = document.createElement('div');
+    item.className = 'redo-item';
+    var tags = '';
+    if (row.isWrong) tags += '<span class="redo-tag wrong">Got wrong</span>';
+    if (row.isFlagged) tags += '<span class="redo-tag flag">Flagged</span>';
+    item.innerHTML =
+      '<div class="redo-item-head">' +
+        '<div class="redo-q" data-i="' + i + '">' + escapeHtml(row.q.q) + '</div>' +
+        '<button class="redo-remove" data-i="' + i + '" type="button" aria-label="Remove from re-do list">\u00d7</button>' +
+      '</div>' +
+      '<div class="redo-tags">' + tags + '</div>' +
+      '<div class="redo-answer" data-ans="' + i + '">' + answerHtml(row.q) + '</div>';
+    list.appendChild(item);
+  });
+  list.querySelectorAll('.redo-q').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var box = list.querySelector('.redo-answer[data-ans="' + el.getAttribute('data-i') + '"]');
+      if (box) { box.classList.toggle('show'); el.classList.toggle('open', box.classList.contains('show')); }
+    });
+  });
+  list.querySelectorAll('.redo-remove').forEach(function (el) {
+    el.addEventListener('click', function () { removeFromRedo(redoCurrent[Number(el.getAttribute('data-i'))].text); });
+  });
+}
+function answerHtml(q) {
+  var html = '';
+  q.opts.forEach(function (opt, oi) {
+    var isCorrect = q.correct.indexOf(oi) !== -1;
+    var cls = isCorrect ? 'correct-ans' : 'neutral';
+    var tag = isCorrect ? '<span class="review-tag tag-answer">Correct answer</span>' : '';
+    html += '<div class="review-opt ' + cls + '"><span class="opt-letter" aria-hidden="true">' + letter(oi) + '</span><span class="ro-text">' + escapeHtml(opt) + '</span>' + tag + '</div>';
+  });
+  return html;
+}
+function removeFromRedo(text) {
+  var mi = mistakePool.indexOf(text);
+  if (mi !== -1) { mistakePool.splice(mi, 1); lsSet(LS.mistakes, mistakePool); }
+  var fi = flagged.indexOf(text);
+  if (fi !== -1) { flagged.splice(fi, 1); lsSet(LS.flagged, flagged); }
+  renderRedo();
+}
+function setRedoFilter(f) { redoFilter = f; renderRedo(); }
+function startRedoQuiz() {
+  if (!redoCurrent.length) return;
+  quizExact(redoCurrent.map(function (r) { return r.text; }));
+}
+
 // ===== START QUIZ + CONFETTI =====
 function startQuiz() {
   if (quizLoading) return;
@@ -1622,6 +1768,13 @@ function buildQuizFromPool(pool, desired, labelMsg) {
 function questionsByText(texts) {
   var set = {}; texts.forEach(function (t) { set[t] = true; });
   return ALL_QUESTIONS.filter(function (q) { return set[q.q]; });
+}
+// Build a quiz from EXACTLY these question texts (no padding) - used for re-do.
+function quizExact(texts) {
+  var qs = shuffleCopy(questionsByText(texts));
+  if (!qs.length) return;
+  currentQuiz = qs;
+  beginQuiz();
 }
 function beginQuiz() {
   currentIndex = 0;
@@ -1713,15 +1866,15 @@ function endQuizEarly() {
 
 // ===== SCORING =====
 function gradeQuiz() {
-  var correct = 0, wrongTexts = [];
+  var correct = 0, wrongTexts = [], correctTexts = [];
   for (var i = 0; i < currentQuiz.length; i++) {
     var q = currentQuiz[i];
     var ok = sameSet(userAnswers[i] || [], q.correct);
-    if (ok) correct++; else wrongTexts.push(q.q);
+    if (ok) { correct++; correctTexts.push(q.q); } else wrongTexts.push(q.q);
   }
   var total = currentQuiz.length;
   var pct = total ? Math.round(correct / total * 100) : 0;
-  return { correct: correct, total: total, pct: pct, wrongTexts: wrongTexts };
+  return { correct: correct, total: total, pct: pct, wrongTexts: wrongTexts, correctTexts: correctTexts };
 }
 
 // ===== REVEAL SEQUENCE =====
@@ -1730,7 +1883,7 @@ function finishQuiz() {
   var graded = gradeQuiz();
   lastResult = graded;
   clearProgress();
-  recordMistakes(graded.wrongTexts);
+  recordMistakes(graded.wrongTexts, graded.correctTexts);
   graded.streak = updateStreak();
   var isFirst = quizHistory.length === 0;
   var prevBest = quizHistory.reduce(function (m, h) { return Math.max(m, h.pct); }, 0);
@@ -1756,9 +1909,10 @@ function shortDate() {
   var mm = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return d.getDate() + ' ' + mm[d.getMonth()];
 }
-function recordMistakes(wrongTexts) {
+function recordMistakes(wrongTexts, correctTexts) {
   var set = {}; mistakePool.forEach(function (t) { set[t] = true; });
   wrongTexts.forEach(function (t) { set[t] = true; });
+  if (correctTexts) correctTexts.forEach(function (t) { delete set[t]; });
   mistakePool = Object.keys(set);
   lsSet(LS.mistakes, mistakePool);
 }
@@ -1960,18 +2114,16 @@ function startComeback() {
   buildQuizFromPool(pool, 10);
 }
 function quizMistakes() {
-  var pool = questionsByText(mistakePool);
   var hint = byId('quizmore-hint');
-  if (!pool.length) { if (hint) hint.textContent = 'No saved mistakes yet. Finish a quiz with a few wrong answers and they will appear here.'; return; }
-  if (pool.length < 10 && hint) hint.textContent = 'You have ' + pool.length + ' saved mistakes, so this quiz uses all of them.';
-  buildQuizFromPool(pool, Math.max(pool.length, 10));
+  if (!mistakePool.length) { if (hint) hint.textContent = 'No saved mistakes yet. Finish a quiz with a few wrong answers and they will appear here.'; return; }
+  if (hint) hint.textContent = 'Practising your ' + mistakePool.length + ' incorrect question' + (mistakePool.length === 1 ? '' : 's') + '.';
+  quizExact(mistakePool);
 }
 function quizFlagged() {
-  var pool = questionsByText(flagged);
   var hint = byId('quizmore-hint');
-  if (!pool.length) { if (hint) hint.textContent = 'No flagged questions yet. Tap the bookmark on any question to flag it.'; return; }
-  if (pool.length < 10 && hint) hint.textContent = 'You have ' + pool.length + ' flagged question' + (pool.length === 1 ? '' : 's') + ', so this quiz uses all of them.';
-  buildQuizFromPool(pool, Math.max(pool.length, 10));
+  if (!flagged.length) { if (hint) hint.textContent = 'No flagged questions yet. Tap the bookmark on any question to flag it.'; return; }
+  if (hint) hint.textContent = 'Practising your ' + flagged.length + ' flagged question' + (flagged.length === 1 ? '' : 's') + '.';
+  quizExact(flagged);
 }
 
 function setFilter(f) {
@@ -2099,7 +2251,7 @@ function clearHistory() {
       lsSet(LS.history, quizHistory); lsSet(LS.flagged, flagged); lsSet(LS.mistakes, mistakePool);
       lsSet(LS.seen, seenPool);
       lsDel(LS.streak); lsDel(LS.inProgress);
-      renderStreak(); renderResumeBanner(); renderHistory();
+      renderStreak(); renderResumeBanner(); renderRedo(); renderHistory();
     }
   });
 }
@@ -2156,6 +2308,12 @@ function init() {
   byId('btn-start').addEventListener('click', startQuiz);
   byId('btn-clear').addEventListener('click', clearHistory);
   byId('theme-toggle').addEventListener('click', toggleTheme);
+
+  // re-do section wiring
+  byId('redo-filters').querySelectorAll('.redo-filter').forEach(function (b) {
+    b.addEventListener('click', function () { setRedoFilter(b.getAttribute('data-rf')); });
+  });
+  byId('btn-redo-quiz').addEventListener('click', startRedoQuiz);
 
   // apply saved theme + load explanation cache early
   applyTheme(lsGet(LS.theme, 'light') === 'dark');
